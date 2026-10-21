@@ -18,26 +18,7 @@
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
         .tab-active { background-color: #2563eb; color: #ffffff; }
-        
-        /* KaTeX Overflow & Responsive Styling */
-        .katex-display { 
-            margin: 0 !important; 
-            font-size: min(1em, 3.5vw) !important;
-        }
-        .math-scroll-container {
-            width: 100%;
-            max-width: 100%;
-            overflow-x: auto;
-            overflow-y: hidden;
-            -webkit-overflow-scrolling: touch;
-        }
-        .math-scroll-container::-webkit-scrollbar {
-            height: 4px;
-        }
-        .math-scroll-container::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
+        .katex-display { margin: 0.5em 0 !important; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
@@ -90,7 +71,7 @@
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
                         <span>Core Concept</span>
                     </div>
-                    <p class="text-xs leading-relaxed">Microcontrollers rely on binary logic because silicon transistors operate as qualitative electronic switches (cutoff vs saturation), providing immense immunity against voltage noise.</p>
+                    <p class="text-xs leading-relaxed">Microcontrollers rely on binary system because transistors act as qualitative switches (cutoff vs. saturation), making noise margins extremely robust.</p>
                 </div>
             </div>
         </nav>
@@ -138,100 +119,52 @@
                         </div>
                     </div>
 
-                    <!-- Interactive Waveform Simulator -->
-                    <div class="p-6 bg-slate-900 rounded-3xl border border-slate-800 space-y-4 text-white">
-                        <div class="border-b border-slate-800 pb-3">
-                            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block">Interactive Waveform Simulator</span>
-                            <h3 class="text-lg font-bold text-white">Pulse Generator: Hardware vs MCU Execution</h3>
-                        </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                            <!-- Scope Display -->
-                            <div class="lg:col-span-8 flex flex-col">
-                                <div class="bg-slate-950 rounded-2xl p-4 shadow-inner border border-slate-800 flex-1 flex flex-col justify-between">
-                                    <div class="flex justify-between items-center text-xs text-slate-400 font-mono mb-2">
-                                        <span class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                            DIGITAL OSCILLOSCOPE CH1
-                                        </span>
-                                        <span id="scopeStatus" class="text-emerald-400">Status: LIVE OUTPUT</span>
-                                    </div>
-                                    
-                                    <div class="relative w-full h-48 bg-slate-900/80 rounded-xl overflow-hidden border border-slate-800/80">
-                                        <canvas id="scopeCanvas" class="w-full h-full block"></canvas>
-                                    </div>
-
-                                    <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800/80 text-center font-mono">
-                                        <div class="bg-slate-900/80 p-2 rounded-lg">
-                                            <div class="text-[10px] text-slate-500 uppercase">Frequency</div>
-                                            <div id="dispFreq" class="text-xs sm:text-sm font-bold text-emerald-400">3 Hz</div>
-                                        </div>
-                                        <div class="bg-slate-900/80 p-2 rounded-lg">
-                                            <div class="text-[10px] text-slate-500 uppercase">Duty Cycle</div>
-                                            <div id="dispDuty" class="text-xs sm:text-sm font-bold text-emerald-400">70 %</div>
-                                        </div>
-                                        <div class="bg-slate-900/80 p-2 rounded-lg">
-                                            <div class="text-[10px] text-slate-500 uppercase">Update Cost</div>
-                                            <div id="dispCost" class="text-xs sm:text-sm font-bold text-blue-400">$0.00 (Firmware)</div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <!-- Simulators vs Emulators -->
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 mb-3">Testing Code: Simulators vs. In-Circuit Debuggers / Emulators</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                                <span class="font-bold text-slate-900 block mb-1">1. Software Simulator</span>
+                                <p class="text-slate-500 leading-relaxed">
+                                    Executes a virtual software model of the target MCU entirely inside the host PC. Excellent for validating mathematical algorithms and logic loops without requiring physical circuit boards.
+                                </p>
                             </div>
-
-                            <!-- Controls -->
-                            <div class="lg:col-span-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-4">
-                                <div>
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Circuit Architecture Mode</label>
-                                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-800 rounded-xl mb-4">
-                                        <button id="modeMCU" onclick="setMode('mcu')" class="py-1.5 text-xs font-bold rounded-lg transition-all bg-blue-600 text-white shadow-sm">MCU</button>
-                                        <button id="modeHW" onclick="setMode('hw')" class="py-1.5 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">Discrete HW</button>
-                                    </div>
-
-                                    <div class="space-y-3">
-                                        <div>
-                                            <div class="flex justify-between text-xs font-medium mb-1">
-                                                <span class="text-slate-400">Frequency Target</span>
-                                                <span id="valFreq" class="font-mono text-emerald-400 font-bold">3 Hz</span>
-                                            </div>
-                                            <input type="range" id="sliderFreq" min="1" max="10" value="3" oninput="onSliderChange()" class="w-full accent-blue-500 cursor-pointer">
-                                        </div>
-
-                                        <div>
-                                            <div class="flex justify-between text-xs font-medium mb-1">
-                                                <span class="text-slate-400">Duty Cycle</span>
-                                                <span id="valDuty" class="font-mono text-emerald-400 font-bold">70%</span>
-                                            </div>
-                                            <input type="range" id="sliderDuty" min="10" max="90" value="70" oninput="onSliderChange()" class="w-full accent-blue-500 cursor-pointer">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <p id="actionLog" class="text-[10px] text-slate-400 text-center italic min-h-[32px] flex items-center justify-center bg-slate-950/80 p-2 rounded-xl border border-slate-800">
-                                    Real-time firmware update enabled. Move sliders.
+                            <div class="p-4 bg-blue-50/60 rounded-xl border border-blue-200 shadow-sm">
+                                <span class="font-bold text-blue-900 block mb-1">2. Hardware Emulator / In-Circuit Debugger (ICD)</span>
+                                <p class="text-blue-950 leading-relaxed">
+                                    Connects the PC IDE directly to physical silicon running real hardware conditions. Allows live register inspections, memory dumps, and single-step line-by-line debugging via debug pins (SWD / JTAG).
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Hardware Debug Protocols & System Design -->
+                    <!-- What is a Programmer / Flasher? -->
                     <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                        <h3 class="text-sm font-bold text-slate-900">Hardware Debug & Programming Interfaces</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">SWD (Serial Wire Debug)</strong>
-                                <span class="text-slate-500">A modern 2-pin ARM protocol (Clock + Data) used to flash code and step through program execution line-by-line.</span>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">JTAG (Joint Test Action Group)</strong>
-                                <span class="text-slate-500">An industry-standard 4-or-5-pin interface designed for deep hardware testing, flash programming, and multi-core chip debugging.</span>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">ICSP (In-Circuit Serial Programming)</strong>
-                                <span class="text-slate-500">Microchip's traditional serial interface used to program PIC microcontrollers directly on circuit boards.</span>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">UPDI (Unified Program and Debug Interface)</strong>
-                                <span class="text-slate-500">Atmel/Microchip's single-pin protocol designed for fast programming and debugging of modern 8-bit AVR microcontrollers.</span>
+                        <h3 class="text-sm font-bold text-slate-900">What is a Programmer / Flasher Hardware Debugger?</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            A <strong>programmer (flasher)</strong> is the physical hardware device that transfers compiled machine code (.HEX / .BIN) from your PC workstation into the microcontroller's internal Flash memory.
+                        </p>
+
+                        <!-- Protocol Glossary -->
+                        <div class="pt-2">
+                            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Hardware Debug & Programming Interfaces</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">SWD (Serial Wire Debug)</strong>
+                                    <span class="text-slate-500">A modern, 2-pin ARM protocol (Clock + Data) used to flash code and step through program execution line-by-line.</span>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">JTAG (Joint Test Action Group)</strong>
+                                    <span class="text-slate-500">An industry-standard 4-or-5-pin interface designed for deep hardware testing, flash programming, and multi-core chip debugging.</span>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">ICSP (In-Circuit Serial Programming)</strong>
+                                    <span class="text-slate-500">Microchip's traditional serial interface used to program PIC microcontrollers directly on circuit boards.</span>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">UPDI (Unified Program and Debug Interface)</strong>
+                                    <span class="text-slate-500">Atmel/Microchip's single-pin protocol designed for fast programming and debugging of modern 8-bit AVR microcontrollers.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -275,7 +208,7 @@
                             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
                                 <span class="font-bold text-slate-900 text-sm block mb-1">Stage 2: Schematic Capture & Firmware Development</span>
                                 <p class="text-slate-600 leading-relaxed">
-                                    Designing electrical PCB schematics, selecting passive components, and writing microcontroller firmware based on hardware/software partitioning.
+                                    Designing the electrical PCB schematics, selecting passive components, and writing microcontroller firmware based on hardware/software partitioning.
                                 </p>
                             </div>
 
@@ -300,16 +233,16 @@
                             </p>
                         </div>
 
-                        <!-- Rendered Positional Formula (With Scroll Container) -->
+                        <!-- Rendered Positional Formula -->
                         <div class="p-5 bg-white rounded-xl border border-slate-200 shadow-sm space-y-3">
                             <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider">General Positional Formula (Radix $q$)</h4>
                             <p class="text-slate-600">
                                 Any real number $N$ represented in a positional base $q$ can be mathematically expanded into its positional power series:
                             </p>
                             
-                            <!-- Responsive Scrollable Box for LaTeX Formula -->
-                            <div class="p-4 bg-slate-900 text-emerald-400 rounded-xl shadow-inner border border-slate-800 math-scroll-container">
-                                <div id="latexFormula" class="w-full text-center">
+                            <!-- Formula Container with Fallback HTML and KaTeX TeX Block -->
+                            <div class="p-4 bg-slate-900 text-emerald-400 rounded-xl text-center font-mono text-sm overflow-x-auto shadow-inner border border-slate-800">
+                                <div id="latexFormula">
                                     $$N = \sum_{i=-m}^{n-1} (d_i \times q^i) = d_{n-1} q^{n-1} + \dots + d_1 q^1 + d_0 q^0 + d_{-1} q^{-1} + \dots + d_{-m} q^{-m}$$
                                 </div>
                             </div>
@@ -328,7 +261,7 @@
                             <!-- Concrete Example Breakdown -->
                             <div class="p-4 bg-blue-50/60 rounded-xl border border-blue-100 space-y-2">
                                 <strong class="text-blue-900 block text-xs">Decimal Example: $123.2_{(10)}$</strong>
-                                <div class="bg-white p-3 rounded-lg border border-blue-200 font-mono text-xs text-blue-900 math-scroll-container">
+                                <div class="bg-white p-3 rounded-lg border border-blue-200 font-mono text-xs text-blue-900">
                                     $$123.2_{(10)} = 1 \cdot 10^2 + 2 \cdot 10^1 + 3 \cdot 10^0 + 2 \cdot 10^{-1}$$
                                 </div>
                             </div>
@@ -509,18 +442,7 @@
 
     <!-- Script Section -->
     <script>
-        // State Management
-        let currentMode = 'mcu';
-        let activeFreq = 3;
-        let activeDuty = 70;
-        let isSimulatingHWMod = false;
-        let hwTimeout = null;
-
-        // Canvas & Oscillation State
-        let canvas, ctx;
-        let phase = 0;
-
-        // Switch Navigation Tabs
+        // Switch between Navigation Tabs
         function switchTab(tabId) {
             ['tab-ide', 'tab-lifecycle'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
@@ -537,161 +459,9 @@
             const progressMap = { 'tab-ide': 50, 'tab-lifecycle': 100 };
             document.getElementById('progressBar').style.width = progressMap[tabId] + '%';
             document.getElementById('progressText').innerText = progressMap[tabId] + '%';
-
-            // Resize Canvas when switching to tab 1
-            if (tabId === 'tab-ide') {
-                setTimeout(resizeAndDrawCanvas, 50);
-            }
         }
 
-        // Section 1 Simulator: Mode Switching
-        function setMode(mode) {
-            currentMode = mode;
-            const btnMCU = document.getElementById('modeMCU');
-            const btnHW = document.getElementById('modeHW');
-            const log = document.getElementById('actionLog');
-
-            if (mode === 'mcu') {
-                btnMCU.className = "py-1.5 text-xs font-bold rounded-lg transition-all bg-blue-600 text-white shadow-sm";
-                btnHW.className = "py-1.5 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white";
-                log.innerText = "Mode: Microcontroller (Instant firmware slider response)";
-                document.getElementById('dispCost').innerText = "$0.00 (Firmware)";
-            } else {
-                btnHW.className = "py-1.5 text-xs font-bold rounded-lg transition-all bg-amber-600 text-white shadow-sm";
-                btnMCU.className = "py-1.5 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white";
-                log.innerText = "Mode: Discrete Hardware (Desoldering delay on slider change)";
-                document.getElementById('dispCost').innerText = "$2.50 (Hardware Rework)";
-            }
-        }
-
-        // Section 1 Simulator: Live Slider Listener
-        function onSliderChange() {
-            const freq = parseInt(document.getElementById('sliderFreq').value);
-            const duty = parseInt(document.getElementById('sliderDuty').value);
-            
-            document.getElementById('valFreq').innerText = freq + " Hz";
-            document.getElementById('valDuty').innerText = duty + "%";
-
-            const log = document.getElementById('actionLog');
-            const status = document.getElementById('scopeStatus');
-
-            if (currentMode === 'hw') {
-                isSimulatingHWMod = true;
-                status.innerText = "Status: REWORKING HARDWARE...";
-                status.className = "text-amber-400 font-bold animate-pulse";
-                log.innerText = "Desoldering old components and replacing resistors/capacitors...";
-                
-                if (hwTimeout) clearTimeout(hwTimeout);
-                hwTimeout = setTimeout(() => {
-                    activeFreq = freq;
-                    activeDuty = duty;
-                    document.getElementById('dispFreq').innerText = activeFreq + " Hz";
-                    document.getElementById('dispDuty').innerText = activeDuty + " %";
-                    status.innerText = "Status: LIVE OUTPUT";
-                    status.className = "text-emerald-400";
-                    log.innerText = "Desoldering complete! New hardware components installed.";
-                    isSimulatingHWMod = false;
-                }, 800);
-            } else {
-                activeFreq = freq;
-                activeDuty = duty;
-                document.getElementById('dispFreq').innerText = activeFreq + " Hz";
-                document.getElementById('dispDuty').innerText = activeDuty + " %";
-                log.innerText = "Firmware parameter updated instantly!";
-            }
-        }
-
-        // Oscilloscope Canvas Rendering Loop
-        function resizeAndDrawCanvas() {
-            canvas = document.getElementById('scopeCanvas');
-            if (!canvas) return;
-            ctx = canvas.getContext('2d');
-
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * window.devicePixelRatio;
-            canvas.height = rect.height * window.devicePixelRatio;
-            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-        }
-
-        function renderOscilloscope() {
-            if (!canvas || !ctx) {
-                requestAnimationFrame(renderOscilloscope);
-                return;
-            }
-
-            const width = canvas.getBoundingClientRect().width;
-            const height = canvas.getBoundingClientRect().height;
-
-            // Clear Background
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(0, 0, width, height);
-
-            // Draw Grid Lines
-            ctx.strokeStyle = '#1e293b';
-            ctx.lineWidth = 1;
-
-            const gridCols = 10;
-            const gridRows = 6;
-            for (let i = 0; i <= gridCols; i++) {
-                const x = (width / gridCols) * i;
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, height);
-                ctx.stroke();
-            }
-            for (let j = 0; j <= gridRows; j++) {
-                const y = (height / gridRows) * j;
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
-                ctx.stroke();
-            }
-
-            // Draw Waveform
-            if (!isSimulatingHWMod) {
-                phase += activeFreq * 0.03;
-                
-                ctx.strokeStyle = '#10b981';
-                ctx.lineWidth = 2.5;
-                ctx.shadowColor = '#10b981';
-                ctx.shadowBlur = 8;
-
-                const highY = height * 0.25;
-                const lowY = height * 0.75;
-                const periodPixels = width / (activeFreq * 1.5);
-                const dutyRatio = activeDuty / 100;
-
-                ctx.beginPath();
-
-                for (let x = 0; x < width; x += 1) {
-                    const cyclePos = ((x + phase * 20) % periodPixels) / periodPixels;
-                    const y = cyclePos < dutyRatio ? highY : lowY;
-
-                    if (x === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
-                }
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-            } else {
-                // Noise graphics during HW desoldering rework
-                ctx.strokeStyle = '#f59e0b';
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                for (let x = 0; x < width; x += 4) {
-                    const y = (height / 2) + (Math.random() * 20 - 10);
-                    if (x === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-            }
-
-            requestAnimationFrame(renderOscilloscope);
-        }
-
-        // Section 2 Simulator: Transistor & TTL Logic
+        // Transistor & TTL Interactive Simulator Logic
         function updateTransistorSim() {
             const v = parseFloat(document.getElementById('voltageSlider').value);
             document.getElementById('sliderValDisplay').innerText = v.toFixed(2) + " V";
@@ -768,9 +538,8 @@
             }
         }
 
-        // Initialize Application
+        // Initialize KaTeX Renderer safely on page load
         window.addEventListener('DOMContentLoaded', () => {
-            // KaTeX Formula Rendering
             if (typeof renderMathInElement !== 'undefined') {
                 renderMathInElement(document.body, {
                     delimiters: [
@@ -780,13 +549,6 @@
                     throwOnError: false
                 });
             }
-
-            // Oscilloscope setup
-            resizeAndDrawCanvas();
-            requestAnimationFrame(renderOscilloscope);
-            window.addEventListener('resize', resizeAndDrawCanvas);
-
-            // Transistor Simulator Setup
             updateTransistorSim();
         });
     </script>
