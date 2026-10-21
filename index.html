@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Embedded Systems Interactive - Lecture 2</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- KaTeX CSS & JS for LaTeX Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
         .tab-active { background-color: #2563eb; color: #ffffff; }
+        .katex-display { margin: 0.5em 0 !important; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
@@ -23,14 +31,14 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 002-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Embedded Systems Interactive - Lecture 2</h1>
-                    <p class="text-xs text-slate-500">IDE, Debugging, Design Stages & Number Systems</p>
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Embedded Systems Interactive</h1>
+                    <p class="text-xs text-slate-500">Lecture 2: Software Toolchain, Design Life Cycle & Transistor Physics</p>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="hidden sm:flex items-center space-x-2 text-xs font-medium text-slate-500">
-                    <span>Lesson Completion</span>
-                    <div class="w-28 bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <span>Lecture Completion</span>
+                    <div class="w-24 bg-slate-200 h-2 rounded-full overflow-hidden">
                         <div id="progressBar" class="bg-blue-600 h-full w-1/2 transition-all duration-300"></div>
                     </div>
                     <span id="progressText" class="w-8 text-right">50%</span>
@@ -44,14 +52,16 @@
         
         <!-- Sidebar Nav -->
         <nav class="lg:col-span-3 space-y-2">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Lecture Sections</div>
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Navigation</div>
+            
             <button onclick="switchTab('tab-ide')" id="nav-tab-ide" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all tab-active">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                 <span>1. IDE, Debugging & Design Stages</span>
             </button>
+            
             <button onclick="switchTab('tab-lifecycle')" id="nav-tab-lifecycle" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 hover:bg-slate-100 transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                <span>2. Design Life Cycle & Number Systems</span>
+                <span>2. Number Systems & Transistor Physics</span>
             </button>
 
             <!-- Key Insight Callout Box -->
@@ -61,7 +71,7 @@
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
                         <span>Core Concept</span>
                     </div>
-                    <p class="text-xs leading-relaxed">System architecture relies on balancing hardware/software partitioning. Binary representation guarantees physical noise immunity through qualitative transistor switching (Cutoff vs Saturation).</p>
+                    <p class="text-xs leading-relaxed">Microcontrollers rely on binary system because transistors act as qualitative switches (cutoff vs. saturation), making noise margins extremely robust.</p>
                 </div>
             </div>
         </nav>
@@ -72,112 +82,110 @@
             <!-- SECTION 1: IDE, DEBUGGING & DESIGN STAGES -->
             <div id="tab-ide" class="space-y-6">
                 <div class="border-b border-slate-100 pb-4">
-                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Development Tools & Process</span>
-                    <h2 class="text-2xl font-bold text-slate-900">1. IDE, Debugging & Design Stages</h2>
-                    <p class="text-slate-500 text-sm mt-1">Understanding Integrated Development Environments, in-circuit debuggers, flashing interfaces, and Stage 1 design partitioning.</p>
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Lesson 1</span>
+                    <h2 class="text-2xl font-bold text-slate-900">IDEs, Debugging Tools & Hardware/Software Partitioning</h2>
+                    <p class="text-slate-500 text-sm mt-1">Understanding Integrated Development Environments, hardware flashing, and embedded design workflows.</p>
                 </div>
 
                 <div class="space-y-6 text-xs text-slate-600 leading-relaxed">
-                    <!-- Integrated Development Environments (IDEs) Overview -->
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
-                        <h3 class="text-sm font-bold text-slate-900">Integrated Development Environments (IDEs)</h3>
+                    
+                    <!-- What is an IDE? -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                        <h3 class="text-sm font-bold text-slate-900">What is an Integrated Development Environment (IDE)?</h3>
                         <p>
-                            An <strong>Integrated Development Environment (IDE)</strong> is a unified software suite combining source code editors, C/C++ cross-compilers, assemblers, linkers, hardware programmers, and debugging interfaces into a single application.
+                            An <strong>Integrated Development Environment (IDE)</strong> bundles all essential software development tools—the text code editor, compiler, assembler, simulator, and programmer interface—into a single unified software application.
+                        </p>
+                        <p>
+                            Microcontroller manufacturers provide tailored IDEs optimized for their chip architectures. Common choices include:
                         </p>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                             <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
                                 <strong class="text-blue-600 block mb-1">VS Code + PlatformIO</strong>
-                                <span class="text-slate-500">Modern cross-platform environment supporting multiple architectures (ESP32, ARM Cortex-M, AVR) with integrated library management.</span>
-                            </div>
-                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
-                                <strong class="text-blue-600 block mb-1">STM32CubeIDE</strong>
-                                <span class="text-slate-500">STMicroelectronics official Eclipse-based IDE with integrated peripheral graphical initialization (CubeMX).</span>
+                                <span class="text-slate-500">Universal ecosystem supporting cross-platform ARM, RISC-V, ESP32, and AVR microcontrollers.</span>
                             </div>
                             <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
                                 <strong class="text-blue-600 block mb-1">MPLAB X IDE</strong>
-                                <span class="text-slate-500">Microchip's standard IDE for PIC and AVR microcontrollers with hardware register views and MCC code generation.</span>
+                                <span class="text-slate-500">Official suite provided freely by Microchip for PIC, AVR, and SAM series microcontrollers.</span>
                             </div>
                             <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
-                                <strong class="text-blue-600 block mb-1">Keil MDK / uVision</strong>
-                                <span class="text-slate-500">Industry-standard commercial ARM Cortex IDE known for high-performance optimization and real-time execution trace.</span>
+                                <strong class="text-blue-600 block mb-1">STM32CubeIDE</strong>
+                                <span class="text-slate-500">STMicroelectronics' free Eclipse-based suite for 32-bit ARM Cortex-M chips with peripheral auto-code generation.</span>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+                                <strong class="text-blue-600 block mb-1">Keil uVision / IAR Embedded Workbench</strong>
+                                <span class="text-slate-500">High-performance commercial IDEs widely utilized in mission-critical industrial & automotive firmware.</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Simulators vs Hardware Debuggers -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2">
-                            <strong class="text-slate-900 text-xs block">Software Simulators</strong>
-                            <p class="text-slate-500">
-                                Software environments running purely on the host PC that model the CPU core and instruction execution in software without physical hardware connected.
-                            </p>
-                            <p class="text-slate-600 text-[11px] bg-slate-50 p-2 rounded border border-slate-100">
-                                🟢 <strong>Pros:</strong> No physical hardware required.<br>
-                                🔴 <strong>Cons:</strong> Cannot accurately simulate complex real-world analog noise, timing jitter, or physical peripheral interactions.
-                            </p>
-                        </div>
-
-                        <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2">
-                            <strong class="text-slate-900 text-xs block">In-Circuit Debuggers (ICD) / Emulators</strong>
-                            <p class="text-slate-500">
-                                Dedicated physical hardware pods (e.g., ST-Link, J-Link, PICkit) that bridge the host PC (USB) to dedicated debug silicon inside the physical MCU.
-                            </p>
-                            <p class="text-slate-600 text-[11px] bg-slate-50 p-2 rounded border border-slate-100">
-                                ⚙️ <strong>Capabilities:</strong> Line-by-line stepping, real-time memory/register inspection, hardware breakpoints on live silicon.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Debug & Programming Protocol Glossary -->
-                    <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                        <h3 class="text-sm font-bold text-slate-900">Hardware Debug & Programming Interfaces Glossary</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">SWD (Serial Wire Debug)</strong>
-                                <span class="text-slate-500">2-pin ARM Cortex protocol (SWCLK + SWDIO) replacing bulky JTAG while retaining full debug capability.</span>
+                    <!-- Simulators vs Emulators -->
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 mb-3">Testing Code: Simulators vs. In-Circuit Debuggers / Emulators</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                                <span class="font-bold text-slate-900 block mb-1">1. Software Simulator</span>
+                                <p class="text-slate-500 leading-relaxed">
+                                    Executes a virtual software model of the target MCU entirely inside the host PC. Excellent for validating mathematical algorithms and logic loops without requiring physical circuit boards.
+                                </p>
                             </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">JTAG</strong>
-                                <span class="text-slate-500">4/5-pin IEEE standard (TMS, TCK, TDI, TDO) for deep chip verification and multi-device boundary scan.</span>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">ICSP / UPDI</strong>
-                                <span class="text-slate-500">In-Circuit Serial Programming (Microchip PIC) and Unified Program and Debug Interface (Modern AVR).</span>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">CMSIS-DAP</strong>
-                                <span class="text-slate-500">Open-source driverless ARM standard for USB debug probes.</span>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 sm:col-span-2">
-                                <strong class="text-blue-600 block mb-1">ST-Link & Segger J-Link</strong>
-                                <span class="text-slate-500">Hardware USB probes providing the physical signal translation between PC IDE commands and target MCU debug lines.</span>
+                            <div class="p-4 bg-blue-50/60 rounded-xl border border-blue-200 shadow-sm">
+                                <span class="font-bold text-blue-900 block mb-1">2. Hardware Emulator / In-Circuit Debugger (ICD)</span>
+                                <p class="text-blue-950 leading-relaxed">
+                                    Connects the PC IDE directly to physical silicon running real hardware conditions. Allows live register inspections, memory dumps, and single-step line-by-line debugging via debug pins (SWD / JTAG).
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Stage 1 Design Lifecycle: Hardware/Software Partitioning -->
-                    <div class="bg-blue-50/60 p-5 rounded-2xl border border-blue-200 space-y-3">
-                        <h3 class="text-sm font-bold text-blue-900">Stage 1 Embedded Design Lifecycle: Hardware / Software Partitioning</h3>
-                        <p class="text-blue-950">
-                            The initial architectural phase of an embedded project involves deciding which functions to implement using dedicated physical hardware components versus firmware code running on the microcontroller.
+                    <!-- What is a Programmer / Flasher? -->
+                    <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-bold text-slate-900">What is a Programmer / Flasher Hardware Debugger?</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            A <strong>programmer (flasher)</strong> is the physical hardware device that transfers compiled machine code (.HEX / .BIN) from your PC workstation into the microcontroller's internal Flash memory.
                         </p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                            <div class="p-3 bg-white rounded-xl border border-blue-200">
-                                <strong class="text-blue-900 block mb-1">Hardware Implementation</strong>
-                                <span class="text-slate-600">Offloads tasks to dedicated ICs or passive circuits. Ultra-fast, deterministic performance, but increases PCB size, BOM cost, and hardware inflexibility.</span>
-                            </div>
-                            <div class="p-3 bg-white rounded-xl border border-blue-200">
-                                <strong class="text-blue-900 block mb-1">Software / Firmware Implementation</strong>
-                                <span class="text-slate-600">Executes algorithms on the MCU CPU. Reduces hardware component count and enables easy post-launch field updates, but consumes CPU clock cycles.</span>
+
+                        <!-- Protocol Glossary -->
+                        <div class="pt-2">
+                            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Hardware Debug & Programming Interfaces</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">SWD (Serial Wire Debug)</strong>
+                                    <span class="text-slate-500">A modern, 2-pin ARM protocol (Clock + Data) used to flash code and step through program execution line-by-line.</span>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">JTAG (Joint Test Action Group)</strong>
+                                    <span class="text-slate-500">An industry-standard 4-or-5-pin interface designed for deep hardware testing, flash programming, and multi-core chip debugging.</span>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">ICSP (In-Circuit Serial Programming)</strong>
+                                    <span class="text-slate-500">Microchip's traditional serial interface used to program PIC microcontrollers directly on circuit boards.</span>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">UPDI (Unified Program and Debug Interface)</strong>
+                                    <span class="text-slate-500">Atmel/Microchip's single-pin protocol designed for fast programming and debugging of modern 8-bit AVR microcontrollers.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- System Design Stage 1 -->
+                    <div class="p-5 bg-blue-50/60 rounded-2xl border border-blue-100 space-y-3">
+                        <h3 class="text-sm font-bold text-blue-900">Stage 1: Hardware / Software Partitioning</h3>
+                        <p class="text-blue-950">
+                            When designing an embedded device, the first crucial engineering step is deciding how to distribute workload functions between **hardware components** and **software firmware routines**.
+                        </p>
+                        <ul class="list-disc list-inside text-blue-900 space-y-1 pl-1">
+                            <li><strong>Goal:</strong> Implement as many tasks as possible in **software firmware** to minimize board space and component costs.</li>
+                            <li><strong>Constraint:</strong> Time-critical high-speed processing or safety cutoffs may still require dedicated hardware logic circuits.</li>
+                        </ul>
+                    </div>
+
                 </div>
 
                 <div class="pt-4 flex justify-end">
                     <button onclick="switchTab('tab-lifecycle')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-xl transition-all shadow-sm">
-                        Next: Design Life Cycle & Number Systems &rarr;
+                        Next: Number Systems & Transistor Physics &rarr;
                     </button>
                 </div>
             </div>
@@ -185,256 +193,244 @@
             <!-- SECTION 2: DESIGN LIFE CYCLE, NUMBER SYSTEMS & TRANSISTOR PHYSICS -->
             <div id="tab-lifecycle" class="space-y-6 hidden">
                 <div class="border-b border-slate-100 pb-4">
-                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Design Architecture & Digital Hardware</span>
-                    <h2 class="text-2xl font-bold text-slate-900">2. Design Life Cycle, Number Systems & Transistor Physics</h2>
-                    <p class="text-slate-500 text-sm mt-1">Design stages 2 & 3, positional vs non-positional numbers, binary silicon physics, and TTL noise margins.</p>
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Lesson 2</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Number Systems, Binary Representation & Transistor Physics</h2>
+                    <p class="text-slate-500 text-sm mt-1">Design life cycle stages, positional number formulas, qualitative transistor switching, and TTL logic levels.</p>
                 </div>
 
                 <div class="space-y-6 text-xs text-slate-600 leading-relaxed">
                     
-                    <!-- Design Stages 2 & 3 -->
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                        <h3 class="text-sm font-bold text-slate-900">Design Life Cycle: Stages 2 & 3</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div class="p-3 bg-white rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">Stage 2: Implementation & Schematic Capture</strong>
-                                <p class="text-slate-600">Drawing hardware schematics in CAD software (KiCad, Altium), laying out the printed circuit board (PCB), and writing modular driver firmware for target peripherals.</p>
+                    <!-- Design Lifecycle Stages 2 & 3 -->
+                    <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-bold text-slate-900">Embedded System Design Stages (Continued)</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <span class="font-bold text-slate-900 text-sm block mb-1">Stage 2: Schematic Capture & Firmware Development</span>
+                                <p class="text-slate-600 leading-relaxed">
+                                    Designing the electrical PCB schematics, selecting passive components, and writing microcontroller firmware based on hardware/software partitioning.
+                                </p>
                             </div>
-                            <div class="p-3 bg-white rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">Stage 3: Testing, Verification & Isolation</strong>
-                                <p class="text-slate-600">Verifying prototype boards on bench oscilloscopes, isolating software bugs from physical hardware flaws using debuggers and logic analyzers.</p>
+
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <span class="font-bold text-slate-900 text-sm block mb-1">Stage 3: Testing, Verification & Debugging</span>
+                                <p class="text-slate-600 leading-relaxed mb-2">
+                                    Verifying that the complete system meets specifications. When faults occur, engineers must isolate whether the issue lies in physical hardware or firmware code.
+                                </p>
+                                <p class="text-slate-500 text-[11px] bg-white p-2 rounded-lg border border-slate-200">
+                                    💡 <strong>Engineering Reality:</strong> In most cases, bugs originate in software code logic rather than faulty physical components.
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Positional vs Non-Positional Number Systems -->
-                    <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                        <h3 class="text-sm font-bold text-slate-900 text-base">Fundamentals of Number Systems</h3>
-                        <p>
-                            A number system defines how numerical quantities are represented. They are divided into two main categories:
-                        </p>
+                    <!-- Number Systems Section -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Number Systems & Positional Mathematical Formulas</h3>
+                            <p class="text-slate-600 mt-1">
+                                A <strong>number system</strong> is a structured method for representing values using symbols (digits). In a <strong>positional number system</strong>, the value of a digit depends on its position relative to the radix point.
+                            </p>
+                        </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-                                <strong class="text-slate-900 block">Non-Positional Number Systems</strong>
-                                <p class="text-slate-600">
-                                    Symbols represent static values regardless of position (e.g., Roman Numerals: III = 3, IX = 9). Arithmetic operations with non-positional systems are extremely difficult to implement in hardware.
-                                </p>
+                        <!-- Rendered Positional Formula -->
+                        <div class="p-5 bg-white rounded-xl border border-slate-200 shadow-sm space-y-3">
+                            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider">General Positional Formula (Radix $q$)</h4>
+                            <p class="text-slate-600">
+                                Any real number $N$ represented in a positional base $q$ can be mathematically expanded into its positional power series:
+                            </p>
+                            
+                            <!-- Formula Container with Fallback HTML and KaTeX TeX Block -->
+                            <div class="p-4 bg-slate-900 text-emerald-400 rounded-xl text-center font-mono text-sm overflow-x-auto shadow-inner border border-slate-800">
+                                <div id="latexFormula">
+                                    $$N = \sum_{i=-m}^{n-1} (d_i \times q^i) = d_{n-1} q^{n-1} + \dots + d_1 q^1 + d_0 q^0 + d_{-1} q^{-1} + \dots + d_{-m} q^{-m}$$
+                                </div>
                             </div>
-                            <div class="p-4 bg-blue-50/60 rounded-xl border border-blue-200 space-y-2">
-                                <strong class="text-blue-900 block">Positional Number Systems (Base $q$)</strong>
-                                <p class="text-blue-950">
-                                    The value of each digit depends directly on its position relative to the radix point. Calculated using the weighted summation formula:
-                                </p>
-                                <div class="bg-white p-2 rounded border border-blue-200 font-mono text-center text-blue-900 font-bold">
-                                    N = ∑ (d_i × q^i) = d_n q^n + ... + d_1 q^1 + d_0 q^0 + d_-1 q^-1 ...
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">$q$ (Base / Radix)</strong>
+                                    <span class="text-slate-500">The total number of unique digit symbols (e.g., $q = 10$ for Decimal, $q = 2$ for Binary, $q = 16$ for Hexadecimal).</span>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <strong class="text-blue-600 block mb-1">$d_i$ (Digit Symbol)</strong>
+                                    <span class="text-slate-500">The specific digit located at position $i$ relative to the radix point.</span>
+                                </div>
+                            </div>
+
+                            <!-- Concrete Example Breakdown -->
+                            <div class="p-4 bg-blue-50/60 rounded-xl border border-blue-100 space-y-2">
+                                <strong class="text-blue-900 block text-xs">Decimal Example: $123.2_{(10)}$</strong>
+                                <div class="bg-white p-3 rounded-lg border border-blue-200 font-mono text-xs text-blue-900">
+                                    $$123.2_{(10)} = 1 \cdot 10^2 + 2 \cdot 10^1 + 3 \cdot 10^0 + 2 \cdot 10^{-1}$$
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Microcontroller Binary Representation & Transistor Physics -->
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
-                        <h3 class="text-sm font-bold text-slate-900 text-base">Microcontroller Binary Representation & Transistor Physics</h3>
-                        <p>
-                            Microcontrollers operate exclusively in the <strong>Binary System (Base 2)</strong> using digits <code class="bg-slate-200 px-1 py-0.5 rounded text-blue-700 font-mono font-bold">0</code> and <code class="bg-slate-200 px-1 py-0.5 rounded text-blue-700 font-mono font-bold">1</code> due to silicon transistor physical characteristics:
-                        </p>
+                        <!-- Textbook Physics Section: Why Microcontrollers Use Binary -->
+                        <div class="p-5 bg-white rounded-xl border border-slate-200 shadow-sm space-y-4">
+                            <h3 class="text-base font-bold text-slate-900">Why Microcontrollers Use Binary & Transistor Physics</h3>
+                            
+                            <p class="text-slate-600 leading-relaxed">
+                                Although humans operate naturally in decimal (Base 10), microcontrollers exclusively use the **binary number system (Base 2)** using digits <strong>'0'</strong> and <strong>'1'</strong> (e.g., $10111011_{(2)}$, $-0.100111_{(2)}$).
+                            </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
-                            <div class="p-3 bg-white rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1 font-sans">Physical Realization</strong>
-                                <p class="text-slate-600 font-sans text-[11px]">Transistors function reliably as electronic switches with two states: Cutoff (OFF) and Saturation (ON).</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                    <strong class="text-slate-900 text-sm block">1. Transistor as a Switch</strong>
+                                    <p class="text-slate-600">
+                                        The fundamental reason for Base 2 is physical feasibility. A transistor operates reliably as an electronic switch with **two stable states**:
+                                    </p>
+                                    <ul class="list-disc list-inside text-slate-500 space-y-1 pl-1">
+                                        <li><strong>Cutoff State (Off):</strong> Represents Logic '0' (No current flows).</li>
+                                        <li><strong>Saturation State (On):</strong> Represents Logic '1' (Current flows freely).</li>
+                                    </ul>
+                                </div>
+
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                    <strong class="text-slate-900 text-sm block">2. Qualitative vs. Quantitative Reliability</strong>
+                                    <p class="text-slate-600">
+                                        Using transistors as binary switches is extremely immune to noise because the system checks a **qualitative difference** (current vs. no current) rather than measuring an exact **quantitative value** of current amperes.
+                                    </p>
+                                </div>
                             </div>
-                            <div class="p-3 bg-white rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1 font-sans">Qualitative Reliability</strong>
-                                <p class="text-slate-600 font-sans text-[11px]">Logic depends on current flow existence, not precise microampere values, rendering circuits immune to noise.</p>
-                            </div>
-                            <div class="p-3 bg-white rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1 font-sans">Arithmetic Simplicity</strong>
-                                <p class="text-slate-600 font-sans text-[11px]">Base 2 drastically simplifies silicon logic gate design for ALU additions, multiplications, and boolean logic.</p>
+
+                            <!-- Voltage Standard TTL Levels -->
+                            <div class="p-4 bg-blue-50/60 rounded-xl border border-blue-100 space-y-2">
+                                <strong class="text-blue-900 text-sm block">TTL Voltage Level Specifications (5V Standard)</strong>
+                                <p class="text-blue-950 leading-relaxed">
+                                    In classical TTL digital circuits, logic levels are mapped to voltage ranges to accommodate noise margins:
+                                </p>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-mono text-center">
+                                    <div class="bg-white p-2.5 rounded-lg border border-blue-200">
+                                        <div class="text-[10px] text-slate-500 uppercase">Logic 0</div>
+                                        <div class="font-bold text-slate-800">0.0V – 0.8V</div>
+                                    </div>
+                                    <div class="bg-amber-100/60 p-2.5 rounded-lg border border-amber-300">
+                                        <div class="text-[10px] text-amber-800 uppercase">Forbidden Zone</div>
+                                        <div class="font-bold text-amber-900">0.8V – 2.4V</div>
+                                    </div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-blue-200">
+                                        <div class="text-[10px] text-slate-500 uppercase">Logic 1</div>
+                                        <div class="font-bold text-emerald-600">2.4V – 5.0V</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
-                    <!-- TTL Voltage Thresholds -->
-                    <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                        <h3 class="text-sm font-bold text-slate-900">Standard 5V TTL Voltage Tolerances</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-center text-xs">
-                            <div class="p-3 bg-slate-100 rounded-xl border border-slate-200">
-                                <div class="text-slate-500 text-[10px] uppercase font-sans">Logic '0' Threshold</div>
-                                <div class="text-sm font-bold text-slate-800">0.0V – 0.8V</div>
-                            </div>
-                            <div class="p-3 bg-red-50 rounded-xl border border-red-200">
-                                <div class="text-red-500 text-[10px] uppercase font-sans">Forbidden Noise Zone</div>
-                                <div class="text-sm font-bold text-red-600">0.8V – 2.4V</div>
-                            </div>
-                            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
-                                <div class="text-emerald-600 text-[10px] uppercase font-sans">Logic '1' Threshold</div>
-                                <div class="text-sm font-bold text-emerald-700">2.4V – 5.0V</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- INTERACTIVE TRANSISTOR & TTL VOLTAGE SIMULATOR -->
-                    <div class="bg-slate-900 text-white p-6 rounded-3xl space-y-6 shadow-xl border border-slate-800">
-                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b border-slate-800 pb-3 gap-2">
+                    <!-- INTERACTIVE SIMULATOR: TRANSISTOR & TTL VOLTAGE LEVELS -->
+                    <div class="p-6 bg-slate-950 text-white rounded-3xl border border-slate-800 space-y-6 shadow-xl">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                             <div>
-                                <span class="text-xs font-bold text-blue-400 uppercase tracking-wider block">Interactive Silicon Physics</span>
-                                <h3 class="text-lg font-bold text-white">Transistor Switch & TTL Voltage Simulator</h3>
+                                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">Interactive Silicon Simulator</span>
+                                <h3 class="text-lg font-bold text-white">Transistor Switch & TTL Voltage Thresholds</h3>
                             </div>
-                            <span class="text-xs font-mono bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700 w-fit">Standard 5V TTL Standard</span>
+                            <span id="transistorBadge" class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full font-mono text-xs font-bold">
+                                Logic 1 (SATURATION)
+                            </span>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                            <!-- Left Controls -->
-                            <div class="lg:col-span-5 space-y-4">
-                                <div>
-                                    <div class="flex justify-between items-center text-xs font-mono mb-2">
-                                        <span class="text-slate-400">Input Pin Voltage (V_in):</span>
-                                        <span id="ttlVoltVal" class="text-lg font-bold text-emerald-400">0.20 V</span>
+                            <!-- Visual Transistor Graphic -->
+                            <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col items-center justify-center space-y-4 relative min-h-[200px]">
+                                <div class="flex items-center space-x-8">
+                                    <!-- Input Voltage Indicator -->
+                                    <div class="text-center">
+                                        <div class="text-[10px] text-slate-400 uppercase font-mono">Gate / Base Input</div>
+                                        <div id="simVoltsText" class="text-xl font-bold font-mono text-blue-400">3.50 V</div>
                                     </div>
-                                    <input type="range" id="ttlSlider" min="0" max="500" value="20" step="10" oninput="updateTTLSim()" class="w-full accent-blue-500 cursor-pointer">
-                                    <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
-                                        <span>0.0V (GND)</span>
-                                        <span>0.8V</span>
-                                        <span>2.4V</span>
-                                        <span>5.0V (VCC)</span>
+
+                                    <!-- Switch Graphic -->
+                                    <div class="relative flex items-center justify-center">
+                                        <div class="w-16 h-16 rounded-2xl border-2 flex items-center justify-center transition-all duration-300" id="transistorBox">
+                                            <svg id="switchIcon" class="w-8 h-8 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Output Register State -->
+                                    <div class="text-center">
+                                        <div class="text-[10px] text-slate-400 uppercase font-mono">Digital Bit Read</div>
+                                        <div id="simBitText" class="text-xl font-bold font-mono text-emerald-400">BIT = 1</div>
                                     </div>
                                 </div>
 
-                                <!-- Status Indicators -->
-                                <div class="space-y-2 font-mono text-xs">
-                                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
-                                        <span class="text-slate-400">TTL Logic State:</span>
-                                        <span id="ttlLogicState" class="font-bold text-slate-200 px-2.5 py-0.5 rounded bg-slate-700">LOGIC '0'</span>
-                                    </div>
-                                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
-                                        <span class="text-slate-400">Transistor Region:</span>
-                                        <span id="ttlTransRegion" class="font-bold text-blue-400">Cutoff (OFF)</span>
-                                    </div>
-                                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
-                                        <span class="text-slate-400">Current Conduction:</span>
-                                        <span id="ttlCurrentState" class="font-bold text-slate-400">Blocked (Zero Flow)</span>
-                                    </div>
-                                </div>
+                                <p id="simExplanation" class="text-xs text-slate-400 text-center max-w-md pt-2">
+                                    Voltage is well above 2.4V threshold. Transistor is fully turned ON (Saturation mode), conducting current reliably.
+                                </p>
                             </div>
 
-                            <!-- Right Visualizer Graphic -->
-                            <div class="lg:col-span-7 bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col items-center justify-center space-y-4">
-                                <div class="w-full text-center text-xs font-mono text-slate-400 mb-1">
-                                    TRANSISTOR HARDWARE SWITCH MODEL
+                            <!-- Controls -->
+                            <div class="lg:col-span-5 space-y-4 bg-slate-900/60 p-5 rounded-2xl border border-slate-800">
+                                <div>
+                                    <div class="flex justify-between text-xs font-mono mb-2">
+                                        <span class="text-slate-400">Input Voltage ($V_{in}$)</span>
+                                        <span id="sliderValDisplay" class="text-emerald-400 font-bold">3.5 V</span>
+                                    </div>
+                                    <input type="range" id="voltageSlider" min="0" max="5" step="0.05" value="3.5" oninput="updateTransistorSim()" class="w-full accent-emerald-500 cursor-pointer">
                                 </div>
 
-                                <!-- Dynamic Circuit Diagram Graphic -->
-                                <div class="relative w-full max-w-md h-40 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-around p-4 overflow-hidden">
-                                    
-                                    <!-- Input Side -->
-                                    <div class="flex flex-col items-center">
-                                        <span class="text-[10px] font-mono text-slate-400">V_IN</span>
-                                        <div id="vinNode" class="w-8 h-8 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-mono text-xs text-white my-1 transition-all">
-                                            0.2V
-                                        </div>
-                                        <span class="text-[9px] text-slate-500">Base Gate</span>
+                                <div class="space-y-2 text-[11px] font-mono">
+                                    <div class="flex justify-between p-2 bg-slate-900 rounded-lg border border-slate-800">
+                                        <span class="text-slate-400">TTL Region:</span>
+                                        <span id="regionText" class="text-emerald-400 font-bold">LOGIC HIGH ('1')</span>
                                     </div>
-
-                                    <!-- Wire / Switch -->
-                                    <div class="flex-1 px-4 flex items-center justify-center relative">
-                                        <div class="w-full h-1 bg-slate-700 rounded"></div>
-                                        <!-- Animated Switch Lever -->
-                                        <div id="switchLever" class="absolute h-1 bg-emerald-400 rounded transition-all duration-300 w-1/2 origin-left -rotate-45"></div>
-                                        <!-- Electron Flow Animation -->
-                                        <div id="electronFlow" class="hidden absolute inset-0 flex items-center justify-around">
-                                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
-                                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
-                                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
-                                        </div>
+                                    <div class="flex justify-between p-2 bg-slate-900 rounded-lg border border-slate-800">
+                                        <span class="text-slate-400">Transistor State:</span>
+                                        <span id="stateText" class="text-emerald-400 font-bold">SATURATION</span>
                                     </div>
-
-                                    <!-- Output Side -->
-                                    <div class="flex flex-col items-center">
-                                        <span class="text-[10px] font-mono text-slate-400">ALU READ</span>
-                                        <div id="voutNode" class="w-10 h-10 rounded-xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-mono text-sm font-bold text-slate-400 my-1 transition-all shadow-lg">
-                                            0
-                                        </div>
-                                        <span class="text-[9px] text-slate-500">Digital Register</span>
-                                    </div>
-                                </div>
-
-                                <!-- Dynamic Text Summary -->
-                                <div id="ttlExplanation" class="text-xs text-center text-slate-400 italic bg-slate-900/90 p-3 rounded-xl border border-slate-800 w-full">
-                                    Input is below 0.8V. The transistor remains in CUTOFF mode (OFF). Register reads Logical '0'.
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- SECTION 2: QUIZ -->
-                    <div class="pt-6 border-t border-slate-200">
-                        <div class="mb-4">
-                            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Assessment</span>
-                            <h3 class="text-xl font-bold text-slate-900">Lecture 2 Knowledge Check</h3>
-                        </div>
-
-                        <div class="space-y-4">
-                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                                <p class="text-sm font-semibold text-slate-900 mb-3">1. What is the primary difference between a Software Simulator and an In-Circuit Debugger (ICD / SWD)?</p>
-                                <div class="space-y-2 text-xs">
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q1" value="a" class="accent-blue-600">
-                                        <span>Software simulators connect via USB wires, whereas ICD debuggers run exclusively on host PC software without hardware.</span>
+                    <!-- KNOWLEDGE ASSESSMENT QUIZ -->
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
+                        <h3 class="text-base font-bold text-slate-900">Lecture 2 Knowledge Assessment</h3>
+                        
+                        <div class="space-y-4 text-xs">
+                            <div class="p-4 bg-white rounded-xl border border-slate-200">
+                                <p class="font-semibold text-slate-900 mb-2">1. Why do microcontrollers use binary (Base 2) instead of decimal (Base 10) inside physical hardware?</p>
+                                <div class="space-y-1.5">
+                                    <label class="flex items-center space-x-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer">
+                                        <input type="radio" name="l2q1" value="a" class="accent-blue-600">
+                                        <span>Binary takes up less memory space than decimal numbers.</span>
                                     </label>
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q1" value="b" class="accent-blue-600">
-                                        <span>Simulators execute on PC software without target silicon, while ICDs connect directly to debug silicon inside physical microcontrollers.</span>
+                                    <label class="flex items-center space-x-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer">
+                                        <input type="radio" name="l2q1" value="b" class="accent-blue-600">
+                                        <span>Transistors act naturally as two-state electronic switches (Cutoff vs Saturation).</span>
                                     </label>
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q1" value="c" class="accent-blue-600">
-                                        <span>Simulators can only program analog components, whereas ICDs program digital gates.</span>
+                                    <label class="flex items-center space-x-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer">
+                                        <input type="radio" name="l2q1" value="c" class="accent-blue-600">
+                                        <span>Microcontrollers cannot perform addition on numbers higher than 1.</span>
                                     </label>
                                 </div>
                             </div>
 
-                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                                <p class="text-sm font-semibold text-slate-900 mb-3">2. Why are transistors operated in Cutoff and Saturation modes inside microcontroller silicon?</p>
-                                <div class="space-y-2 text-xs">
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q2" value="a" class="accent-blue-600">
-                                        <span>They create two distinct switching states (OFF and ON) that model binary 0 and 1 with qualitative noise immunity.</span>
+                            <div class="p-4 bg-white rounded-xl border border-slate-200">
+                                <p class="font-semibold text-slate-900 mb-2">2. In standard 5V TTL logic, what happens if an input voltage falls into the 0.8V to 2.4V range?</p>
+                                <div class="space-y-1.5">
+                                    <label class="flex items-center space-x-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer">
+                                        <input type="radio" name="l2q2" value="a" class="accent-blue-600">
+                                        <span>It is read reliably as Logic 0.</span>
                                     </label>
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q2" value="b" class="accent-blue-600">
-                                        <span>Operating in Cutoff and Saturation allows microcontrollers to process 10 distinct decimal voltage levels simultaneously.</span>
+                                    <label class="flex items-center space-x-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer">
+                                        <input type="radio" name="l2q2" value="b" class="accent-blue-600">
+                                        <span>It falls into an undefined/forbidden zone causing potential logic errors.</span>
                                     </label>
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q2" value="c" class="accent-blue-600">
-                                        <span>It prevents microcontrollers from consuming electrical current.</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                                <p class="text-sm font-semibold text-slate-900 mb-3">3. What occurs if a signal voltage of 1.6V is applied to a 5V TTL input pin?</p>
-                                <div class="space-y-2 text-xs">
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q3" value="a" class="accent-blue-600">
-                                        <span>It is cleanly recognized as Logic 0.</span>
-                                    </label>
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q3" value="b" class="accent-blue-600">
-                                        <span>It falls into the undefined forbidden noise zone (0.8V - 2.4V), causing non-deterministic / unstable logic behavior.</span>
-                                    </label>
-                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
-                                        <input type="radio" name="q3" value="c" class="accent-blue-600">
-                                        <span>It is cleanly recognized as Logic 1.</span>
+                                    <label class="flex items-center space-x-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer">
+                                        <input type="radio" name="l2q2" value="c" class="accent-blue-600">
+                                        <span>It instantly re-programs the microcontroller flash memory.</span>
                                     </label>
                                 </div>
                             </div>
 
-                            <button onclick="checkQuiz()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-xl shadow-md transition-all">
-                                Submit Lecture 2 Answers
+                            <button onclick="checkLecture2Quiz()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-xl shadow-md transition-all">
+                                Check Answers
                             </button>
 
-                            <div id="quizResult" class="hidden p-4 rounded-xl text-xs font-semibold"></div>
+                            <div id="quiz2Result" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
                         </div>
                     </div>
 
@@ -446,7 +442,7 @@
 
     <!-- Script Section -->
     <script>
-        // Tab Switching Logic
+        // Switch between Navigation Tabs
         function switchTab(tabId) {
             ['tab-ide', 'tab-lifecycle'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
@@ -460,102 +456,100 @@
             navBtn.classList.remove('text-slate-600');
 
             // Update Progress Bar
-            const progressMap = { 
-                'tab-ide': 50, 
-                'tab-lifecycle': 100 
-            };
+            const progressMap = { 'tab-ide': 50, 'tab-lifecycle': 100 };
             document.getElementById('progressBar').style.width = progressMap[tabId] + '%';
             document.getElementById('progressText').innerText = progressMap[tabId] + '%';
         }
 
-        // Interactive Transistor & TTL Simulator
-        function updateTTLSim() {
-            const rawVal = parseInt(document.getElementById('ttlSlider').value);
-            const volts = (rawVal / 100).toFixed(2);
+        // Transistor & TTL Interactive Simulator Logic
+        function updateTransistorSim() {
+            const v = parseFloat(document.getElementById('voltageSlider').value);
+            document.getElementById('sliderValDisplay').innerText = v.toFixed(2) + " V";
+            document.getElementById('simVoltsText').innerText = v.toFixed(2) + " V";
 
-            document.getElementById('ttlVoltVal').innerText = volts + " V";
-            document.getElementById('vinNode').innerText = volts + "V";
+            const badge = document.getElementById('transistorBadge');
+            const box = document.getElementById('transistorBox');
+            const icon = document.getElementById('switchIcon');
+            const bitText = document.getElementById('simBitText');
+            const exp = document.getElementById('simExplanation');
+            const regText = document.getElementById('regionText');
+            const stText = document.getElementById('stateText');
 
-            const logicState = document.getElementById('ttlLogicState');
-            const transRegion = document.getElementById('ttlTransRegion');
-            const currentState = document.getElementById('ttlCurrentState');
-            const explanation = document.getElementById('ttlExplanation');
-            const switchLever = document.getElementById('switchLever');
-            const electronFlow = document.getElementById('electronFlow');
-            const voutNode = document.getElementById('voutNode');
-
-            if (volts <= 0.80) {
-                // Logic '0' Range
-                logicState.className = "font-bold text-slate-200 px-2.5 py-0.5 rounded bg-slate-700";
-                logicState.innerText = "LOGIC '0'";
-                transRegion.className = "font-bold text-blue-400";
-                transRegion.innerText = "Cutoff (OFF)";
-                currentState.className = "font-bold text-slate-400";
-                currentState.innerText = "Blocked (Zero Flow)";
-                explanation.innerText = `Input voltage (${volts}V) is within 0.0V–0.8V. Transistor is in CUTOFF mode (OFF). Register reads clean Logical '0'.`;
-
-                switchLever.className = "absolute h-1 bg-slate-600 rounded transition-all duration-300 w-1/2 origin-left -rotate-45";
-                electronFlow.classList.add('hidden');
-                voutNode.className = "w-10 h-10 rounded-xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-mono text-sm font-bold text-slate-400 my-1 transition-all shadow-lg";
-                voutNode.innerText = "0";
-
-            } else if (volts > 0.80 && volts < 2.40) {
-                // Forbidden / Invalid Region
-                logicState.className = "font-bold text-red-400 px-2.5 py-0.5 rounded bg-red-950 border border-red-800 animate-pulse";
-                logicState.innerText = "INVALID / UNDEFINED";
-                transRegion.className = "font-bold text-amber-400";
-                transRegion.innerText = "Active / Linear Region";
-                currentState.className = "font-bold text-amber-400";
-                currentState.innerText = "Unstable Leakage";
-                explanation.innerText = `WARNING: Input voltage (${volts}V) lies in the forbidden noise region (0.8V–2.4V). Transistor is partially conducting. Microcontroller reading is unpredictable!`;
-
-                switchLever.className = "absolute h-1 bg-amber-400 rounded transition-all duration-300 w-1/2 origin-left -rotate-12";
-                electronFlow.classList.add('hidden');
-                voutNode.className = "w-10 h-10 rounded-xl bg-amber-950 border-2 border-amber-500 flex items-center justify-center font-mono text-sm font-bold text-amber-400 my-1 transition-all shadow-lg animate-bounce";
-                voutNode.innerText = "?";
-
+            if (v <= 0.8) {
+                // Logic 0 - CUTOFF
+                badge.className = "px-3 py-1 bg-slate-700 text-slate-300 border border-slate-600 rounded-full font-mono text-xs font-bold";
+                badge.innerText = "Logic 0 (CUTOFF)";
+                box.className = "w-16 h-16 rounded-2xl border-2 border-slate-600 bg-slate-900 flex items-center justify-center text-slate-500";
+                icon.style.transform = "rotate(-45deg)";
+                bitText.className = "text-xl font-bold font-mono text-slate-400";
+                bitText.innerText = "BIT = 0";
+                exp.innerText = "Voltage is below 0.8V. The transistor is completely OFF (Cutoff state). Zero current flows through the circuit.";
+                regText.className = "text-slate-400 font-bold";
+                regText.innerText = "LOGIC LOW ('0')";
+                stText.className = "text-slate-400 font-bold";
+                stText.innerText = "CUTOFF (OFF)";
+            } else if (v > 0.8 && v < 2.4) {
+                // Forbidden Region / Linear
+                badge.className = "px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full font-mono text-xs font-bold animate-pulse";
+                badge.innerText = "FORBIDDEN ZONE (LINEAR)";
+                box.className = "w-16 h-16 rounded-2xl border-2 border-amber-500 bg-amber-500/10 flex items-center justify-center text-amber-400";
+                icon.style.transform = "rotate(-20deg)";
+                bitText.className = "text-xl font-bold font-mono text-amber-400";
+                bitText.innerText = "BIT = UNCERTAIN";
+                exp.innerText = "WARNING: Voltage is inside the forbidden TTL zone (0.8V - 2.4V). Transistor is in linear active region causing unreliable digital reads!";
+                regText.className = "text-amber-400 font-bold";
+                regText.innerText = "FORBIDDEN / UNDEFINED";
+                stText.className = "text-amber-400 font-bold";
+                stText.innerText = "LINEAR / UNSTABLE";
             } else {
-                // Logic '1' Range
-                logicState.className = "font-bold text-emerald-300 px-2.5 py-0.5 rounded bg-emerald-950 border border-emerald-700";
-                logicState.innerText = "LOGIC '1'";
-                transRegion.className = "font-bold text-emerald-400";
-                transRegion.innerText = "Saturation (ON)";
-                currentState.className = "font-bold text-emerald-400";
-                currentState.innerText = "Full Conduction";
-                explanation.innerText = `Input voltage (${volts}V) is within 2.4V–5.0V. Transistor is fully SATURATED (ON). Register reads clean Logical '1'.`;
-
-                switchLever.className = "absolute h-1 bg-emerald-400 rounded transition-all duration-300 w-full origin-left rotate-0";
-                electronFlow.classList.remove('hidden');
-                voutNode.className = "w-10 h-10 rounded-xl bg-emerald-950 border-2 border-emerald-500 flex items-center justify-center font-mono text-sm font-bold text-emerald-400 my-1 transition-all shadow-lg shadow-emerald-900/50";
-                voutNode.innerText = "1";
+                // Logic 1 - SATURATION
+                badge.className = "px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full font-mono text-xs font-bold";
+                badge.innerText = "Logic 1 (SATURATION)";
+                box.className = "w-16 h-16 rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 flex items-center justify-center text-emerald-400";
+                icon.style.transform = "rotate(0deg)";
+                bitText.className = "text-xl font-bold font-mono text-emerald-400";
+                bitText.innerText = "BIT = 1";
+                exp.innerText = "Voltage is above 2.4V threshold. Transistor is fully turned ON (Saturation state), conducting maximum current safely.";
+                regText.className = "text-emerald-400 font-bold";
+                regText.innerText = "LOGIC HIGH ('1')";
+                stText.className = "text-emerald-400 font-bold";
+                stText.innerText = "SATURATION (ON)";
             }
         }
 
-        // Quiz Verification Logic
-        function checkQuiz() {
-            const q1 = document.querySelector('input[name="q1"]:checked');
-            const q2 = document.querySelector('input[name="q2"]:checked');
-            const q3 = document.querySelector('input[name="q3"]:checked');
-            const res = document.getElementById('quizResult');
+        // Lecture 2 Quiz Verification
+        function checkLecture2Quiz() {
+            const q1 = document.querySelector('input[name="l2q1"]:checked');
+            const q2 = document.querySelector('input[name="l2q2"]:checked');
+            const res = document.getElementById('quiz2Result');
 
-            if (!q1 || !q2 || !q3) {
-                res.className = "p-4 rounded-xl text-xs font-semibold bg-amber-100 text-amber-800 block";
-                res.innerText = "Please answer all three questions before submitting.";
+            if (!q1 || !q2) {
+                res.className = "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-800 block";
+                res.innerText = "Please select answers for both questions.";
                 return;
             }
 
-            if (q1.value === 'b' && q2.value === 'a' && q3.value === 'b') {
-                res.className = "p-4 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-800 block";
-                res.innerText = "Excellent! You scored 100%. You clearly understand IDE tools, debugging interfaces, transistor physics, and TTL logic noise margins!";
+            if (q1.value === 'b' && q2.value === 'b') {
+                res.className = "p-3 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-800 block";
+                res.innerText = "Correct! Transistors operate as binary switches (cutoff vs saturation), and voltages between 0.8V-2.4V cause forbidden logic errors.";
             } else {
-                res.className = "p-4 rounded-xl text-xs font-semibold bg-red-100 text-red-800 block";
-                res.innerText = "Some answers were incorrect. Please review the sections and try again!";
+                res.className = "p-3 rounded-xl text-xs font-semibold bg-red-100 text-red-800 block";
+                res.innerText = "Some answers were incorrect. Review the Transistor Physics section and try again!";
             }
         }
 
-        // Initialize Simulator State
+        // Initialize KaTeX Renderer safely on page load
         window.addEventListener('DOMContentLoaded', () => {
-            updateTTLSim();
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+            updateTransistorSim();
         });
     </script>
 </body>
