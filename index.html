@@ -6,18 +6,11 @@
     <title>Embedded Systems Interactive - Lecture 2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- KaTeX CSS & JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
         .tab-active { background-color: #2563eb; color: #ffffff; }
-        .katex-display { margin: 0 !important; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
@@ -233,10 +226,8 @@
                                 <p class="text-blue-950">
                                     The value of each digit depends directly on its position relative to the radix point. Calculated using the weighted summation formula:
                                 </p>
-                                
-                                <!-- KaTeX Formatted Positional Formula -->
-                                <div class="bg-white p-3 rounded-lg border border-blue-200 font-mono text-center text-blue-900 font-bold overflow-x-auto">
-                                    $$N = \sum_{i=-m}^{n-1} (d_i \times q^i) = d_{n-1}q^{n-1} + \dots + d_1q^1 + d_0q^0 + d_{-1}q^{-1} + \dots + d_{-m}q^{-m}$$
+                                <div class="bg-white p-2 rounded border border-blue-200 font-mono text-center text-blue-900 font-bold">
+                                    N = ∑ (d_i × q^i) = d_n q^n + ... + d_1 q^1 + d_0 q^0 + d_-1 q^-1 ...
                                 </div>
                             </div>
                         </div>
@@ -299,7 +290,7 @@
                             <div class="lg:col-span-5 space-y-4">
                                 <div>
                                     <div class="flex justify-between items-center text-xs font-mono mb-2">
-                                        <span class="text-slate-400">Input Pin Voltage ($V_{in}$):</span>
+                                        <span class="text-slate-400">Input Pin Voltage (V_in):</span>
                                         <span id="ttlVoltVal" class="text-lg font-bold text-emerald-400">0.20 V</span>
                                     </div>
                                     <input type="range" id="ttlSlider" min="0" max="500" value="20" step="10" oninput="updateTTLSim()" class="w-full accent-blue-500 cursor-pointer">
@@ -377,7 +368,7 @@
                         </div>
                     </div>
 
-                    <!-- ASSESSMENT QUIZ -->
+                    <!-- SECTION 2: QUIZ -->
                     <div class="pt-6 border-t border-slate-200">
                         <div class="mb-4">
                             <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Assessment</span>
@@ -404,30 +395,49 @@
                             </div>
 
                             <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                                <p class="text-sm font-semibold text-slate-900 mb-3">2. In 5V TTL logic, what happens when an input voltage measures 1.5V?</p>
+                                <p class="text-sm font-semibold text-slate-900 mb-3">2. Why are transistors operated in Cutoff and Saturation modes inside microcontroller silicon?</p>
                                 <div class="space-y-2 text-xs">
                                     <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
                                         <input type="radio" name="q2" value="a" class="accent-blue-600">
-                                        <span>It is consistently read as Logic 0.</span>
+                                        <span>They create two distinct switching states (OFF and ON) that model binary 0 and 1 with qualitative noise immunity.</span>
                                     </label>
                                     <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
                                         <input type="radio" name="q2" value="b" class="accent-blue-600">
-                                        <span>It enters the forbidden noise region (0.8V–2.4V), causing unstable/undefined logic readings.</span>
+                                        <span>Operating in Cutoff and Saturation allows microcontrollers to process 10 distinct decimal voltage levels simultaneously.</span>
                                     </label>
                                     <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
                                         <input type="radio" name="q2" value="c" class="accent-blue-600">
-                                        <span>It triggers an automatic flash re-program sequence.</span>
+                                        <span>It prevents microcontrollers from consuming electrical current.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                                <p class="text-sm font-semibold text-slate-900 mb-3">3. What occurs if a signal voltage of 1.6V is applied to a 5V TTL input pin?</p>
+                                <div class="space-y-2 text-xs">
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q3" value="a" class="accent-blue-600">
+                                        <span>It is cleanly recognized as Logic 0.</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q3" value="b" class="accent-blue-600">
+                                        <span>It falls into the undefined forbidden noise zone (0.8V - 2.4V), causing non-deterministic / unstable logic behavior.</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q3" value="c" class="accent-blue-600">
+                                        <span>It is cleanly recognized as Logic 1.</span>
                                     </label>
                                 </div>
                             </div>
 
                             <button onclick="checkQuiz()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-xl shadow-md transition-all">
-                                Submit Answers
+                                Submit Lecture 2 Answers
                             </button>
 
                             <div id="quizResult" class="hidden p-4 rounded-xl text-xs font-semibold"></div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -436,6 +446,7 @@
 
     <!-- Script Section -->
     <script>
+        // Tab Switching Logic
         function switchTab(tabId) {
             ['tab-ide', 'tab-lifecycle'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
@@ -448,94 +459,102 @@
             navBtn.classList.add('tab-active');
             navBtn.classList.remove('text-slate-600');
 
-            const progressMap = { 'tab-ide': 50, 'tab-lifecycle': 100 };
+            // Update Progress Bar
+            const progressMap = { 
+                'tab-ide': 50, 
+                'tab-lifecycle': 100 
+            };
             document.getElementById('progressBar').style.width = progressMap[tabId] + '%';
             document.getElementById('progressText').innerText = progressMap[tabId] + '%';
         }
 
+        // Interactive Transistor & TTL Simulator
         function updateTTLSim() {
             const rawVal = parseInt(document.getElementById('ttlSlider').value);
             const volts = (rawVal / 100).toFixed(2);
+
             document.getElementById('ttlVoltVal').innerText = volts + " V";
             document.getElementById('vinNode').innerText = volts + "V";
 
-            const stateLbl = document.getElementById('ttlLogicState');
-            const regionLbl = document.getElementById('ttlTransRegion');
-            const currentLbl = document.getElementById('ttlCurrentState');
+            const logicState = document.getElementById('ttlLogicState');
+            const transRegion = document.getElementById('ttlTransRegion');
+            const currentState = document.getElementById('ttlCurrentState');
+            const explanation = document.getElementById('ttlExplanation');
             const switchLever = document.getElementById('switchLever');
             const electronFlow = document.getElementById('electronFlow');
             const voutNode = document.getElementById('voutNode');
-            const explanation = document.getElementById('ttlExplanation');
 
-            if (volts <= 0.8) {
-                stateLbl.innerText = "LOGIC '0'";
-                stateLbl.className = "font-bold px-2.5 py-0.5 rounded bg-slate-700 text-slate-200";
-                regionLbl.innerText = "Cutoff (OFF)";
-                regionLbl.className = "font-bold text-slate-400";
-                currentLbl.innerText = "Blocked (Zero Flow)";
-                currentLbl.className = "font-bold text-slate-400";
+            if (volts <= 0.80) {
+                // Logic '0' Range
+                logicState.className = "font-bold text-slate-200 px-2.5 py-0.5 rounded bg-slate-700";
+                logicState.innerText = "LOGIC '0'";
+                transRegion.className = "font-bold text-blue-400";
+                transRegion.innerText = "Cutoff (OFF)";
+                currentState.className = "font-bold text-slate-400";
+                currentState.innerText = "Blocked (Zero Flow)";
+                explanation.innerText = `Input voltage (${volts}V) is within 0.0V–0.8V. Transistor is in CUTOFF mode (OFF). Register reads clean Logical '0'.`;
+
                 switchLever.className = "absolute h-1 bg-slate-600 rounded transition-all duration-300 w-1/2 origin-left -rotate-45";
                 electronFlow.classList.add('hidden');
-                voutNode.innerText = "0";
                 voutNode.className = "w-10 h-10 rounded-xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-mono text-sm font-bold text-slate-400 my-1 transition-all shadow-lg";
-                explanation.innerText = "Input is below 0.8V. The transistor remains in CUTOFF mode (OFF). Register reads Logical '0'.";
-            } else if (volts > 0.8 && volts < 2.4) {
-                stateLbl.innerText = "UNDEFINED / INVALID";
-                stateLbl.className = "font-bold px-2.5 py-0.5 rounded bg-red-900/80 text-red-200 animate-pulse";
-                regionLbl.innerText = "Linear / Unstable Region";
-                regionLbl.className = "font-bold text-red-400";
-                currentLbl.innerText = "Partial / Floating Flow";
-                currentLbl.className = "font-bold text-red-400";
-                switchLever.className = "absolute h-1 bg-red-400 rounded transition-all duration-300 w-1/2 origin-left -rotate-20";
+                voutNode.innerText = "0";
+
+            } else if (volts > 0.80 && volts < 2.40) {
+                // Forbidden / Invalid Region
+                logicState.className = "font-bold text-red-400 px-2.5 py-0.5 rounded bg-red-950 border border-red-800 animate-pulse";
+                logicState.innerText = "INVALID / UNDEFINED";
+                transRegion.className = "font-bold text-amber-400";
+                transRegion.innerText = "Active / Linear Region";
+                currentState.className = "font-bold text-amber-400";
+                currentState.innerText = "Unstable Leakage";
+                explanation.innerText = `WARNING: Input voltage (${volts}V) lies in the forbidden noise region (0.8V–2.4V). Transistor is partially conducting. Microcontroller reading is unpredictable!`;
+
+                switchLever.className = "absolute h-1 bg-amber-400 rounded transition-all duration-300 w-1/2 origin-left -rotate-12";
                 electronFlow.classList.add('hidden');
+                voutNode.className = "w-10 h-10 rounded-xl bg-amber-950 border-2 border-amber-500 flex items-center justify-center font-mono text-sm font-bold text-amber-400 my-1 transition-all shadow-lg animate-bounce";
                 voutNode.innerText = "?";
-                voutNode.className = "w-10 h-10 rounded-xl bg-red-950/80 border-2 border-red-500 flex items-center justify-center font-mono text-sm font-bold text-red-400 my-1 transition-all shadow-lg animate-pulse";
-                explanation.innerText = "WARNING: Input voltage lies within the Forbidden Noise Zone (0.8V–2.4V). Transistor behavior is erratic!";
+
             } else {
-                stateLbl.innerText = "LOGIC '1'";
-                stateLbl.className = "font-bold px-2.5 py-0.5 rounded bg-emerald-900/80 text-emerald-200";
-                regionLbl.innerText = "Saturation (ON)";
-                regionLbl.className = "font-bold text-emerald-400";
-                currentLbl.innerText = "Saturated Conduction";
-                currentLbl.className = "font-bold text-emerald-400";
-                switchLever.className = "absolute h-1 bg-emerald-400 rounded transition-all duration-300 w-1/2 origin-left rotate-0";
+                // Logic '1' Range
+                logicState.className = "font-bold text-emerald-300 px-2.5 py-0.5 rounded bg-emerald-950 border border-emerald-700";
+                logicState.innerText = "LOGIC '1'";
+                transRegion.className = "font-bold text-emerald-400";
+                transRegion.innerText = "Saturation (ON)";
+                currentState.className = "font-bold text-emerald-400";
+                currentState.innerText = "Full Conduction";
+                explanation.innerText = `Input voltage (${volts}V) is within 2.4V–5.0V. Transistor is fully SATURATED (ON). Register reads clean Logical '1'.`;
+
+                switchLever.className = "absolute h-1 bg-emerald-400 rounded transition-all duration-300 w-full origin-left rotate-0";
                 electronFlow.classList.remove('hidden');
+                voutNode.className = "w-10 h-10 rounded-xl bg-emerald-950 border-2 border-emerald-500 flex items-center justify-center font-mono text-sm font-bold text-emerald-400 my-1 transition-all shadow-lg shadow-emerald-900/50";
                 voutNode.innerText = "1";
-                voutNode.className = "w-10 h-10 rounded-xl bg-emerald-950 border-2 border-emerald-500 flex items-center justify-center font-mono text-sm font-bold text-emerald-400 my-1 transition-all shadow-lg";
-                explanation.innerText = "Input is above 2.4V threshold. Transistor enters SATURATION mode (ON). Register reads Logical '1'.";
             }
         }
 
+        // Quiz Verification Logic
         function checkQuiz() {
             const q1 = document.querySelector('input[name="q1"]:checked');
             const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
             const res = document.getElementById('quizResult');
 
-            if (!q1 || !q2) {
+            if (!q1 || !q2 || !q3) {
                 res.className = "p-4 rounded-xl text-xs font-semibold bg-amber-100 text-amber-800 block";
-                res.innerText = "Please answer both assessment questions before submitting.";
+                res.innerText = "Please answer all three questions before submitting.";
                 return;
             }
 
-            if (q1.value === 'b' && q2.value === 'b') {
+            if (q1.value === 'b' && q2.value === 'a' && q3.value === 'b') {
                 res.className = "p-4 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-800 block";
-                res.innerText = "Excellent! You scored 100%. You clearly understand debugging architectures and TTL voltage thresholds.";
+                res.innerText = "Excellent! You scored 100%. You clearly understand IDE tools, debugging interfaces, transistor physics, and TTL logic noise margins!";
             } else {
                 res.className = "p-4 rounded-xl text-xs font-semibold bg-red-100 text-red-800 block";
-                res.innerText = "Some answers were incorrect. Please review the sections above and try again!";
+                res.innerText = "Some answers were incorrect. Please review the sections and try again!";
             }
         }
 
+        // Initialize Simulator State
         window.addEventListener('DOMContentLoaded', () => {
-            if (typeof renderMathInElement !== 'undefined') {
-                renderMathInElement(document.body, {
-                    delimiters: [
-                        {left: '$$', right: '$$', display: true},
-                        {left: '$', right: '$', display: false}
-                    ],
-                    throwOnError: false
-                });
-            }
             updateTTLSim();
         });
     </script>
