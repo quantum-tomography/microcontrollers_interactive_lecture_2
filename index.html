@@ -187,7 +187,7 @@
                 <div class="border-b border-slate-100 pb-4">
                     <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Design Architecture & Digital Hardware</span>
                     <h2 class="text-2xl font-bold text-slate-900">2. Design Life Cycle, Number Systems & Transistor Physics</h2>
-                    <p class="text-slate-500 text-sm mt-1">Design stages 2 & 3, positional vs non-positional numbers, binary silicon physics, and TTL noise margins.</p>
+                    <p class="text-slate-500 text-sm mt-1">Design stages 2 & 3, positional vs non-positional numbers, binary silicon physics, and CMOS noise margins.</p>
                 </div>
 
                 <div class="space-y-6 text-xs text-slate-600 leading-relaxed">
@@ -256,33 +256,33 @@
                         </div>
                     </div>
 
-                    <!-- TTL Voltage Thresholds -->
+                    <!-- CMOS Voltage Thresholds -->
                     <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                        <h3 class="text-sm font-bold text-slate-900">Standard 5V TTL Voltage Tolerances</h3>
+                        <h3 class="text-sm font-bold text-slate-900">Standard 5V CMOS Voltage Tolerances</h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-center text-xs">
                             <div class="p-3 bg-slate-100 rounded-xl border border-slate-200">
-                                <div class="text-slate-500 text-[10px] uppercase font-sans">Logic '0' Threshold</div>
-                                <div class="text-sm font-bold text-slate-800">0.0V – 0.8V</div>
+                                <div class="text-slate-500 text-[10px] uppercase font-sans">Logic '0' Threshold (V_IL ≤ 30% VCC)</div>
+                                <div class="text-sm font-bold text-slate-800">0.0V – 1.5V</div>
                             </div>
                             <div class="p-3 bg-red-50 rounded-xl border border-red-200">
                                 <div class="text-red-500 text-[10px] uppercase font-sans">Forbidden Noise Zone</div>
-                                <div class="text-sm font-bold text-red-600">0.8V – 2.4V</div>
+                                <div class="text-sm font-bold text-red-600">1.5V – 3.5V</div>
                             </div>
                             <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
-                                <div class="text-emerald-600 text-[10px] uppercase font-sans">Logic '1' Threshold</div>
-                                <div class="text-sm font-bold text-emerald-700">2.4V – 5.0V</div>
+                                <div class="text-emerald-600 text-[10px] uppercase font-sans">Logic '1' Threshold (V_IH ≥ 70% VCC)</div>
+                                <div class="text-sm font-bold text-emerald-700">3.5V – 5.0V</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- INTERACTIVE TRANSISTOR & TTL VOLTAGE SIMULATOR -->
+                    <!-- INTERACTIVE TRANSISTOR & CMOS VOLTAGE SIMULATOR -->
                     <div class="bg-slate-900 text-white p-6 rounded-3xl space-y-6 shadow-xl border border-slate-800">
                         <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b border-slate-800 pb-3 gap-2">
                             <div>
                                 <span class="text-xs font-bold text-blue-400 uppercase tracking-wider block">Interactive Silicon Physics</span>
-                                <h3 class="text-lg font-bold text-white">Transistor Switch & TTL Voltage Simulator</h3>
+                                <h3 class="text-lg font-bold text-white">Transistor Switch & CMOS Voltage Simulator</h3>
                             </div>
-                            <span class="text-xs font-mono bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700 w-fit">Standard 5V TTL Standard</span>
+                            <span class="text-xs font-mono bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700 w-fit">Standard 5V CMOS Standard</span>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
@@ -296,8 +296,8 @@
                                     <input type="range" id="ttlSlider" min="0" max="500" value="20" step="10" oninput="updateTTLSim()" class="w-full accent-blue-500 cursor-pointer">
                                     <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
                                         <span>0.0V (GND)</span>
-                                        <span>0.8V</span>
-                                        <span>2.4V</span>
+                                        <span>1.5V</span>
+                                        <span>3.5V</span>
                                         <span>5.0V (VCC)</span>
                                     </div>
                                 </div>
@@ -305,7 +305,7 @@
                                 <!-- Status Indicators -->
                                 <div class="space-y-2 font-mono text-xs">
                                     <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
-                                        <span class="text-slate-400">TTL Logic State:</span>
+                                        <span class="text-slate-400">CMOS Logic State:</span>
                                         <span id="ttlLogicState" class="font-bold text-slate-200 px-2.5 py-0.5 rounded bg-slate-700">LOGIC '0'</span>
                                     </div>
                                     <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
@@ -362,7 +362,7 @@
 
                                 <!-- Dynamic Text Summary -->
                                 <div id="ttlExplanation" class="text-xs text-center text-slate-400 italic bg-slate-900/90 p-3 rounded-xl border border-slate-800 w-full">
-                                    Input is below 0.8V. The transistor remains in CUTOFF mode (OFF). Register reads Logical '0'.
+                                    Input is below 1.5V. The transistor remains in CUTOFF mode (OFF). Register reads Logical '0'.
                                 </div>
                             </div>
                         </div>
@@ -413,7 +413,7 @@
                             </div>
 
                             <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                                <p class="text-sm font-semibold text-slate-900 mb-3">3. What occurs if a signal voltage of 1.6V is applied to a 5V TTL input pin?</p>
+                                <p class="text-sm font-semibold text-slate-900 mb-3">3. What occurs if a signal voltage of 2.0V is applied to a 5V CMOS input pin?</p>
                                 <div class="space-y-2 text-xs">
                                     <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
                                         <input type="radio" name="q3" value="a" class="accent-blue-600">
@@ -421,7 +421,7 @@
                                     </label>
                                     <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
                                         <input type="radio" name="q3" value="b" class="accent-blue-600">
-                                        <span>It falls into the undefined forbidden noise zone (0.8V - 2.4V), causing non-deterministic / unstable logic behavior.</span>
+                                        <span>It falls into the undefined forbidden noise zone (1.5V - 3.5V), causing non-deterministic / unstable logic behavior.</span>
                                     </label>
                                     <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
                                         <input type="radio" name="q3" value="c" class="accent-blue-600">
@@ -468,7 +468,7 @@
             document.getElementById('progressText').innerText = progressMap[tabId] + '%';
         }
 
-        // Interactive Transistor & TTL Simulator
+        // Interactive Transistor & CMOS Simulator
         function updateTTLSim() {
             const rawVal = parseInt(document.getElementById('ttlSlider').value);
             const volts = (rawVal / 100).toFixed(2);
@@ -484,30 +484,30 @@
             const electronFlow = document.getElementById('electronFlow');
             const voutNode = document.getElementById('voutNode');
 
-            if (volts <= 0.80) {
-                // Logic '0' Range
+            if (volts <= 1.50) {
+                // Logic '0' Range (CMOS V_IL <= 1.5V for 5V VCC)
                 logicState.className = "font-bold text-slate-200 px-2.5 py-0.5 rounded bg-slate-700";
                 logicState.innerText = "LOGIC '0'";
                 transRegion.className = "font-bold text-blue-400";
                 transRegion.innerText = "Cutoff (OFF)";
                 currentState.className = "font-bold text-slate-400";
                 currentState.innerText = "Blocked (Zero Flow)";
-                explanation.innerText = `Input voltage (${volts}V) is within 0.0V–0.8V. Transistor is in CUTOFF mode (OFF). Register reads clean Logical '0'.`;
+                explanation.innerText = `Input voltage (${volts}V) is within 0.0V–1.5V (≤30% VCC). Transistor is in CUTOFF mode (OFF). Register reads clean Logical '0'.`;
 
                 switchLever.className = "absolute h-1 bg-slate-600 rounded transition-all duration-300 w-1/2 origin-left -rotate-45";
                 electronFlow.classList.add('hidden');
                 voutNode.className = "w-10 h-10 rounded-xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center font-mono text-sm font-bold text-slate-400 my-1 transition-all shadow-lg";
                 voutNode.innerText = "0";
 
-            } else if (volts > 0.80 && volts < 2.40) {
-                // Forbidden / Invalid Region
+            } else if (volts > 1.50 && volts < 3.50) {
+                // Forbidden / Invalid Region (CMOS 1.5V - 3.5V for 5V VCC)
                 logicState.className = "font-bold text-red-400 px-2.5 py-0.5 rounded bg-red-950 border border-red-800 animate-pulse";
                 logicState.innerText = "INVALID / UNDEFINED";
                 transRegion.className = "font-bold text-amber-400";
                 transRegion.innerText = "Active / Linear Region";
                 currentState.className = "font-bold text-amber-400";
                 currentState.innerText = "Unstable Leakage";
-                explanation.innerText = `WARNING: Input voltage (${volts}V) lies in the forbidden noise region (0.8V–2.4V). Transistor is partially conducting. Microcontroller reading is unpredictable!`;
+                explanation.innerText = `WARNING: Input voltage (${volts}V) lies in the forbidden CMOS noise region (1.5V–3.5V). Transistor is partially conducting. Microcontroller reading is unpredictable!`;
 
                 switchLever.className = "absolute h-1 bg-amber-400 rounded transition-all duration-300 w-1/2 origin-left -rotate-12";
                 electronFlow.classList.add('hidden');
@@ -515,14 +515,14 @@
                 voutNode.innerText = "?";
 
             } else {
-                // Logic '1' Range
+                // Logic '1' Range (CMOS V_IH >= 3.5V for 5V VCC)
                 logicState.className = "font-bold text-emerald-300 px-2.5 py-0.5 rounded bg-emerald-950 border border-emerald-700";
                 logicState.innerText = "LOGIC '1'";
                 transRegion.className = "font-bold text-emerald-400";
                 transRegion.innerText = "Saturation (ON)";
                 currentState.className = "font-bold text-emerald-400";
                 currentState.innerText = "Full Conduction";
-                explanation.innerText = `Input voltage (${volts}V) is within 2.4V–5.0V. Transistor is fully SATURATED (ON). Register reads clean Logical '1'.`;
+                explanation.innerText = `Input voltage (${volts}V) is within 3.5V–5.0V (≥70% VCC). Transistor is fully SATURATED (ON). Register reads clean Logical '1'.`;
 
                 switchLever.className = "absolute h-1 bg-emerald-400 rounded transition-all duration-300 w-full origin-left rotate-0";
                 electronFlow.classList.remove('hidden');
@@ -546,7 +546,7 @@
 
             if (q1.value === 'b' && q2.value === 'a' && q3.value === 'b') {
                 res.className = "p-4 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-800 block";
-                res.innerText = "Excellent! You scored 100%. You clearly understand IDE tools, debugging interfaces, transistor physics, and TTL logic noise margins!";
+                res.innerText = "Excellent! You scored 100%. You clearly understand IDE tools, debugging interfaces, transistor physics, and CMOS logic noise margins!";
             } else {
                 res.className = "p-4 rounded-xl text-xs font-semibold bg-red-100 text-red-800 block";
                 res.innerText = "Some answers were incorrect. Please review the sections and try again!";
