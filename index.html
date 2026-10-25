@@ -24,16 +24,16 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-slate-900 leading-tight">Embedded Systems Interactive - Lecture 2</h1>
-                    <p class="text-xs text-slate-500">IDE, Debugging, Design Stages & Number Systems</p>
+                    <p class="text-xs text-slate-500">IDE, Debugging, Design Stages, Number Systems & GPIO Interfacing</p>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="hidden sm:flex items-center space-x-2 text-xs font-medium text-slate-500">
                     <span>Lesson Completion</span>
                     <div class="w-28 bg-slate-200 h-2 rounded-full overflow-hidden">
-                        <div id="progressBar" class="bg-blue-600 h-full w-1/2 transition-all duration-300"></div>
+                        <div id="progressBar" class="bg-blue-600 h-full w-1/3 transition-all duration-300"></div>
                     </div>
-                    <span id="progressText" class="w-8 text-right">50%</span>
+                    <span id="progressText" class="w-8 text-right">33%</span>
                 </div>
             </div>
         </div>
@@ -52,6 +52,10 @@
             <button onclick="switchTab('tab-lifecycle')" id="nav-tab-lifecycle" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 hover:bg-slate-100 transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 <span>2. Design Life Cycle & Number Systems</span>
+            </button>
+            <button onclick="switchTab('tab-gpio')" id="nav-tab-gpio" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 hover:bg-slate-100 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <span>3. GPIO Interfacing, Pull-Ups & Currents</span>
             </button>
 
             <!-- Key Insight Callout Box -->
@@ -441,14 +445,271 @@
                 </div>
             </div>
 
+            <!-- SECTION 3: GPIO INTERFACING, PULL-UPS & CURRENTS (NEW SLIDE) -->
+            <div id="tab-gpio" class="space-y-6 hidden">
+                <div class="border-b border-slate-100 pb-4">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Chapter 7 Practical Applications</span>
+                    <h2 class="text-2xl font-bold text-slate-900">3. GPIO Interfacing, Pull-Up Resistors & Current Limits</h2>
+                    <p class="text-slate-500 text-sm mt-1">Understanding input logic signal driving, internal/external pull-ups, current sinking vs. sourcing, and overcurrent limits.</p>
+                </div>
+
+                <div class="space-y-6 text-xs text-slate-600 leading-relaxed">
+                    
+                    <!-- Pull-Up / Pull-Down Resistors (Fig 7.4) -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <h3 class="text-base font-bold text-slate-900">1. Driving Input Pins & Pull-Up Resistors (Fig. 7.4)</h3>
+                        <p class="text-slate-600">
+                            When connecting buttons or external switches to a microcontroller input pin, driving a low logic level ('0') is done by directly shorting the pin to Ground (GND). However, providing a high logic level ('1') <strong>requires a pull-up resistor</strong> ($R = 10\text{k}\Omega$) connected to $V_{DD}$[cite: 4].
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                            <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2">
+                                <strong class="text-blue-600 text-xs block">Why is a Pull-Up Resistor Mandatory?</strong>
+                                <p class="text-slate-600">
+                                    If you connect $V_{DD}$ directly to an input pin without a resistor, pressing a switch wired to GND would short-circuit $V_{DD}$ directly to GND[cite: 4]! The $10\text{k}\Omega$ pull-up limits short-circuit current while pulling the floating pin safely to $V_{DD}$ when the switch is open[cite: 4].
+                                </p>
+                            </div>
+
+                            <div class="p-4 bg-blue-50/60 rounded-xl border border-blue-200 space-y-2">
+                                <strong class="text-blue-900 text-xs block">Internal Weak Pull-Ups (OPTION_REG)</strong>
+                                <p class="text-blue-950">
+                                    Many microcontrollers (such as Microchip PICs) feature built-in programmable pull-up resistors on select ports (e.g., PORT B)[cite: 4]. These internal pull-ups are enabled by clearing Bit 7 of the <code class="bg-white px-1 py-0.5 rounded border border-blue-200 font-mono font-bold text-blue-900">OPTION_REG</code> register[cite: 4].
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Sinking vs Sourcing (Fig 7.5) -->
+                    <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-base font-bold text-slate-900">2. MCU Pins as Current Sinks & Sources (Fig. 7.5)</h3>
+                        <p class="text-slate-600">
+                            When configured as digital outputs, microcontroller I/O pins can actively sink current from an external load or source current to drive devices like LEDs[cite: 4].
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Sink Mode (Приемник) -->
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <strong class="text-slate-900 text-xs block">a) Current Receiver / Sink (Приемник)</strong>
+                                    <span class="text-[10px] font-mono font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded">Max: 25mA</span>
+                                </div>
+                                <p class="text-slate-600">
+                                    The load is connected between $V_{DD}$ and the MCU output pin[cite: 4]. When the pin output is driven LOW ('0'), the internal transistor grounds the node, pulling current <em>into</em> the chip ($U_{OUT} = 0\text{V}$)[cite: 4].
+                                </p>
+                                <p class="text-slate-500 text-[11px] bg-white p-2 rounded border border-slate-200">
+                                    💡 Maximum allowable sink current per pin: <strong>25mA</strong>[cite: 4].
+                                </p>
+                            </div>
+
+                            <!-- Source Mode (Източник) -->
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <strong class="text-slate-900 text-xs block">b) Current Source (Източник)</strong>
+                                    <span class="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">Max: 20mA</span>
+                                </div>
+                                <p class="text-slate-600">
+                                    The load is connected between the MCU output pin and GND[cite: 4]. When the pin output is driven HIGH ('1'), the MCU supplies current <em>out</em> of the chip to the load ($U_{OUT} = V_{DD}$)[cite: 4].
+                                </p>
+                                <p class="text-slate-500 text-[11px] bg-white p-2 rounded border border-slate-200">
+                                    💡 Maximum allowable source current per pin: <strong>20mA</strong>[cite: 4].
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Overcurrent Warning Callout -->
+                        <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 space-y-1">
+                            <strong class="text-amber-900 text-xs flex items-center gap-1.5">
+                                ⚠️ Overcurrent Protection & Thermal Damage
+                            </strong>
+                            <p class="text-amber-800 text-xs leading-relaxed">
+                                While MCU pins can drive LEDs directly, care must be taken not to exceed current ratings[cite: 4]. Exceeding 25mA (sinking) or 20mA (sourcing) will destroy the individual I/O pin drivers or damage the entire I/O port[cite: 4]! Always include external current-limiting resistors ($R$)[cite: 4].
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- INTERACTIVE GPIO INTERFACING SIMULATOR -->
+                    <div class="bg-slate-900 text-white p-6 rounded-3xl space-y-6 shadow-xl border border-slate-800">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b border-slate-800 pb-3 gap-2">
+                            <div>
+                                <span class="text-xs font-bold text-blue-400 uppercase tracking-wider block">Interactive Hardware Lab</span>
+                                <h3 class="text-lg font-bold text-white">GPIO Pull-Up & Current Sink/Source Simulator</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700 w-fit">Chapter 7 Circuit Rules</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                            <!-- Left Controls -->
+                            <div class="lg:col-span-5 space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Select Circuit Configuration Mode</label>
+                                    <div class="grid grid-cols-3 gap-1 bg-slate-800 p-1 rounded-xl font-mono text-[11px]">
+                                        <button id="btnPullUp" onclick="setGpioMode('pullup')" class="py-1.5 rounded-lg bg-blue-600 text-white font-bold transition-all">Pull-Up In</button>
+                                        <button id="btnSink" onclick="setGpioMode('sink')" class="py-1.5 rounded-lg text-slate-400 hover:text-white transition-all">Sink Output</button>
+                                        <button id="btnSource" onclick="setGpioMode('source')" class="py-1.5 rounded-lg text-slate-400 hover:text-white transition-all">Source Out</button>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Mode Action Toggle -->
+                                <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span id="gpioActionLabel" class="text-xs font-mono text-slate-300">Push Button Switch:</span>
+                                        <button id="gpioToggleBtn" onclick="toggleGpioSwitch()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md">
+                                            Switch OPEN
+                                        </button>
+                                    </div>
+                                    <p id="gpioModeDesc" class="text-[11px] text-slate-400 leading-relaxed">
+                                        Pull-Up resistor ($10\text{k}\Omega$) holds input pin at $V_{DD}$ ('1') when switch is open[cite: 4]. Closing switch safely grounds the pin to '0'[cite: 4].
+                                    </p>
+                                </div>
+
+                                <!-- Status Readouts -->
+                                <div class="space-y-2 font-mono text-xs">
+                                    <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
+                                        <span class="text-slate-400">MCU Pin State:</span>
+                                        <span id="gpioPinVal" class="font-bold text-emerald-400">LOGIC '1' (5.0V)</span>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
+                                        <span class="text-slate-400">Current Flow ($I$):</span>
+                                        <span id="gpioCurrentVal" class="font-bold text-slate-300">0.0 mA (Idle)</span>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
+                                        <span class="text-slate-400">Rating Safety:</span>
+                                        <span id="gpioSafetyVal" class="font-bold text-emerald-400">SAFE (&lt;25mA Limit)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Visualizer Diagram -->
+                            <div class="lg:col-span-7 bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col items-center justify-center space-y-4">
+                                <div class="w-full text-center text-xs font-mono text-slate-400 mb-1">
+                                    PIC MCU HARDWARE SCHEMATIC (FIG 7.4 / 7.5)[cite: 4]
+                                </div>
+
+                                <!-- Dynamic Circuit Schematic Display -->
+                                <div class="relative w-full max-w-md h-44 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between p-6 overflow-hidden">
+                                    
+                                    <!-- Left Power/Load Component -->
+                                    <div class="flex flex-col items-center justify-center space-y-1">
+                                        <span id="schemLeftLabel" class="text-[10px] font-mono text-slate-400">VDD (5V)</span>
+                                        <div id="schemLeftBox" class="w-10 h-10 rounded-xl bg-blue-900/60 border-2 border-blue-500 flex items-center justify-center font-mono text-xs font-bold text-blue-300 shadow-md">
+                                            R 10k
+                                        </div>
+                                        <span id="schemLeftSub" class="text-[9px] text-slate-500">Pull-Up</span>
+                                    </div>
+
+                                    <!-- Wire with Current Arrows -->
+                                    <div class="flex-1 px-4 flex flex-col items-center justify-center relative">
+                                        <div class="w-full h-1 bg-slate-700 rounded"></div>
+                                        <!-- Animated Direction Indicator -->
+                                        <div id="schemCurrentArrow" class="text-xs font-mono text-emerald-400 font-bold transition-all duration-300">
+                                            ─── IDLE ───
+                                        </div>
+                                    </div>
+
+                                    <!-- PIC Microcontroller Box -->
+                                    <div class="flex flex-col items-center justify-center space-y-1">
+                                        <span class="text-[10px] font-mono text-slate-400">PIC MCU</span>
+                                        <div id="schemMcuPin" class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-slate-600 flex flex-col items-center justify-center font-mono text-xs font-bold text-white shadow-xl">
+                                            <span id="schemPinModeText" class="text-[9px] text-blue-400">INPUT</span>
+                                            <span id="schemPinValText" class="text-sm">IN = 1</span>
+                                        </div>
+                                        <span class="text-[9px] text-slate-500">I/O Pin</span>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Text Summary -->
+                                <div id="gpioExplanation" class="text-xs text-center text-slate-400 italic bg-slate-900/90 p-3 rounded-xl border border-slate-800 w-full">
+                                    Switch OPEN: $10\text{k}\Omega$ pull-up resistor pulls input pin to $V_{DD}$[cite: 4]. Register reads Logic '1'[cite: 4].
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 3: QUIZ -->
+                    <div class="pt-6 border-t border-slate-200">
+                        <div class="mb-4">
+                            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Assessment</span>
+                            <h3 class="text-xl font-bold text-slate-900">Lecture 2 Knowledge Check</h3>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                                <p class="text-sm font-semibold text-slate-900 mb-3">1. What is the primary purpose of a $10\text{k}\Omega$ pull-up resistor on a microcontroller input pin (Fig. 7.4)?</p>
+                                <div class="space-y-2 text-xs">
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q1" value="a" class="accent-blue-600">
+                                        <span>It increases the clock frequency of the internal processor.</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q1" value="b" class="accent-blue-600">
+                                        <span>It safely pulls floating inputs to a defined '1' logic level while preventing short-circuits to GND when a switch closes[cite: 4].</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q1" value="c" class="accent-blue-600">
+                                        <span>It converts digital signals directly into analog voltages.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                                <p class="text-sm font-semibold text-slate-900 mb-3">2. What are the maximum safe current limits for a PIC MCU output pin when acting as a Sink vs. Source (Fig. 7.5)?</p>
+                                <div class="space-y-2 text-xs">
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q2" value="a" class="accent-blue-600">
+                                        <span>Sink (Receiver): Max 25mA | Source (Emitter): Max 20mA[cite: 4].</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q2" value="b" class="accent-blue-600">
+                                        <span>Sink: Max 500mA | Source: Max 1000mA.</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q2" value="c" class="accent-blue-600">
+                                        <span>Sink: Max 5mA | Source: Max 5mA.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                                <p class="text-sm font-semibold text-slate-900 mb-3">3. How are internal pull-up resistors on PORT B activated in software on PIC microcontrollers?</p>
+                                <div class="space-y-2 text-xs">
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q3" value="a" class="accent-blue-600">
+                                        <span>By setting the main CPU clock divider to zero.</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q3" value="b" class="accent-blue-600">
+                                        <span>By clearing Bit 7 of the OPTION_REG register[cite: 4].</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <input type="radio" name="q3" value="c" class="accent-blue-600">
+                                        <span>By executing an assembly NOP instruction.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button onclick="checkQuiz()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-xl shadow-md transition-all">
+                                Submit Lecture 2 Answers
+                            </button>
+
+                            <div id="quizResult" class="hidden p-4 rounded-xl text-xs font-semibold"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </section>
     </main>
 
     <!-- Script Section -->
     <script>
+        // State Management
+        let currentGpioMode = 'pullup';
+        let switchStateClosed = false;
+
         // Tab Switching Logic
         function switchTab(tabId) {
-            ['tab-ide', 'tab-lifecycle'].forEach(id => {
+            ['tab-ide', 'tab-lifecycle', 'tab-gpio'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
                 document.getElementById('nav-' + id).classList.remove('tab-active');
                 document.getElementById('nav-' + id).classList.add('text-slate-600');
@@ -461,14 +722,15 @@
 
             // Update Progress Bar
             const progressMap = { 
-                'tab-ide': 50, 
-                'tab-lifecycle': 100 
+                'tab-ide': 33, 
+                'tab-lifecycle': 66,
+                'tab-gpio': 100
             };
             document.getElementById('progressBar').style.width = progressMap[tabId] + '%';
             document.getElementById('progressText').innerText = progressMap[tabId] + '%';
         }
 
-        // Interactive Transistor & CMOS Simulator
+        // Section 2 Simulator: CMOS Voltage
         function updateTTLSim() {
             const rawVal = parseInt(document.getElementById('ttlSlider').value);
             const volts = (rawVal / 100).toFixed(2);
@@ -485,7 +747,7 @@
             const voutNode = document.getElementById('voutNode');
 
             if (volts <= 1.50) {
-                // Logic '0' Range (CMOS V_IL <= 1.5V for 5V VCC)
+                // Logic '0' Range
                 logicState.className = "font-bold text-slate-200 px-2.5 py-0.5 rounded bg-slate-700";
                 logicState.innerText = "LOGIC '0'";
                 transRegion.className = "font-bold text-blue-400";
@@ -500,7 +762,7 @@
                 voutNode.innerText = "0";
 
             } else if (volts > 1.50 && volts < 3.50) {
-                // Forbidden / Invalid Region (CMOS 1.5V - 3.5V for 5V VCC)
+                // Forbidden / Invalid Region
                 logicState.className = "font-bold text-red-400 px-2.5 py-0.5 rounded bg-red-950 border border-red-800 animate-pulse";
                 logicState.innerText = "INVALID / UNDEFINED";
                 transRegion.className = "font-bold text-amber-400";
@@ -515,7 +777,7 @@
                 voutNode.innerText = "?";
 
             } else {
-                // Logic '1' Range (CMOS V_IH >= 3.5V for 5V VCC)
+                // Logic '1' Range
                 logicState.className = "font-bold text-emerald-300 px-2.5 py-0.5 rounded bg-emerald-950 border border-emerald-700";
                 logicState.innerText = "LOGIC '1'";
                 transRegion.className = "font-bold text-emerald-400";
@@ -528,6 +790,171 @@
                 electronFlow.classList.remove('hidden');
                 voutNode.className = "w-10 h-10 rounded-xl bg-emerald-950 border-2 border-emerald-500 flex items-center justify-center font-mono text-sm font-bold text-emerald-400 my-1 transition-all shadow-lg shadow-emerald-900/50";
                 voutNode.innerText = "1";
+            }
+        }
+
+        // Section 3 Simulator: GPIO Modes
+        function setGpioMode(mode) {
+            currentGpioMode = mode;
+            switchStateClosed = false;
+
+            const b1 = document.getElementById('btnPullUp');
+            const b2 = document.getElementById('btnSink');
+            const b3 = document.getElementById('btnSource');
+            const label = document.getElementById('gpioActionLabel');
+            const toggleBtn = document.getElementById('gpioToggleBtn');
+
+            b1.className = "py-1.5 rounded-lg text-slate-400 hover:text-white transition-all";
+            b2.className = "py-1.5 rounded-lg text-slate-400 hover:text-white transition-all";
+            b3.className = "py-1.5 rounded-lg text-slate-400 hover:text-white transition-all";
+
+            if (mode === 'pullup') {
+                b1.className = "py-1.5 rounded-lg bg-blue-600 text-white font-bold transition-all";
+                label.innerText = "Push Button Switch:";
+                toggleBtn.innerText = "Switch OPEN";
+                toggleBtn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+            } else if (mode === 'sink') {
+                b2.className = "py-1.5 rounded-lg bg-blue-600 text-white font-bold transition-all";
+                label.innerText = "MCU Output Register:";
+                toggleBtn.innerText = "Output HIGH ('1')";
+                toggleBtn.className = "px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+            } else {
+                b3.className = "py-1.5 rounded-lg bg-blue-600 text-white font-bold transition-all";
+                label.innerText = "MCU Output Register:";
+                toggleBtn.innerText = "Output LOW ('0')";
+                toggleBtn.className = "px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+            }
+
+            renderGpioSim();
+        }
+
+        function toggleGpioSwitch() {
+            switchStateClosed = !switchStateClosed;
+            renderGpioSim();
+        }
+
+        function renderGpioSim() {
+            const toggleBtn = document.getElementById('gpioToggleBtn');
+            const desc = document.getElementById('gpioModeDesc');
+            const pinVal = document.getElementById('gpioPinVal');
+            const currentVal = document.getElementById('gpioCurrentVal');
+            const safetyVal = document.getElementById('gpioSafetyVal');
+
+            const schemLeftLabel = document.getElementById('schemLeftLabel');
+            const schemLeftBox = document.getElementById('schemLeftBox');
+            const schemLeftSub = document.getElementById('schemLeftSub');
+            const schemCurrentArrow = document.getElementById('schemCurrentArrow');
+            const schemPinModeText = document.getElementById('schemPinModeText');
+            const schemPinValText = document.getElementById('schemPinValText');
+            const gpioExplanation = document.getElementById('gpioExplanation');
+
+            if (currentGpioMode === 'pullup') {
+                schemPinModeText.innerText = "INPUT";
+                schemLeftLabel.innerText = "VDD (5V)";
+                schemLeftBox.innerText = "R 10k";
+                schemLeftSub.innerText = "Pull-Up";
+
+                if (!switchStateClosed) {
+                    toggleBtn.innerText = "Switch OPEN";
+                    toggleBtn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+                    desc.innerText = "Switch is OPEN. The 10kΩ pull-up resistor holds the input pin voltage tightly at VDD (5.0V)[cite: 4].";
+                    pinVal.innerText = "LOGIC '1' (5.0V)";
+                    pinVal.className = "font-bold text-emerald-400";
+                    currentVal.innerText = "0.0 mA (Idle)";
+                    safetyVal.innerText = "SAFE (<25mA Limit)";
+                    safetyVal.className = "font-bold text-emerald-400";
+
+                    schemCurrentArrow.innerText = "─── IDLE ───";
+                    schemCurrentArrow.className = "text-xs font-mono text-slate-500 font-bold";
+                    schemPinValText.innerText = "IN = 1";
+                    gpioExplanation.innerText = "Switch OPEN: $10\\text{k}\\Omega$ pull-up resistor pulls input pin to $V_{DD}$[cite: 4]. Register reads Logic '1'[cite: 4].";
+                } else {
+                    toggleBtn.innerText = "Switch CLOSED (GND)";
+                    toggleBtn.className = "px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+                    desc.innerText = "Switch is CLOSED to GND. Current flows safely from VDD through 10kΩ resistor to GND ($I = 0.5\\text{mA}$)[cite: 4]. Pin drops to 0V[cite: 4].";
+                    pinVal.innerText = "LOGIC '0' (0.0V)";
+                    pinVal.className = "font-bold text-blue-400";
+                    currentVal.innerText = "0.5 mA (Safe)";
+                    safetyVal.innerText = "SAFE (<25mA Limit)";
+                    safetyVal.className = "font-bold text-emerald-400";
+
+                    schemCurrentArrow.innerText = "◄── 0.5mA ──";
+                    schemCurrentArrow.className = "text-xs font-mono text-amber-400 font-bold animate-pulse";
+                    schemPinValText.innerText = "IN = 0";
+                    gpioExplanation.innerText = "Switch CLOSED: Pin directly grounded to 0V[cite: 4]. $10\\text{k}\\Omega$ resistor limits short-circuit current to $0.5\\text{mA}$[cite: 4].";
+                }
+
+            } else if (currentGpioMode === 'sink') {
+                schemPinModeText.innerText = "OUTPUT (SINK)";
+                schemLeftLabel.innerText = "VDD (5V)";
+                schemLeftBox.innerText = "LED + R";
+                schemLeftSub.innerText = "External Load";
+
+                if (!switchStateClosed) { // Output HIGH ('1') -> LED OFF
+                    toggleBtn.innerText = "Output HIGH ('1')";
+                    toggleBtn.className = "px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+                    desc.innerText = "MCU Output is HIGH (5V). Both sides of the LED load are at 5V ($U_{OUT} = V_{DD}$), so zero current flows and LED is OFF[cite: 4].";
+                    pinVal.innerText = "LOGIC '1' (5.0V)";
+                    pinVal.className = "font-bold text-slate-300";
+                    currentVal.innerText = "0.0 mA (No Diff)";
+                    safetyVal.innerText = "SAFE (Max 25mA Limit)";
+                    safetyVal.className = "font-bold text-emerald-400";
+
+                    schemCurrentArrow.innerText = "─── OFF ───";
+                    schemCurrentArrow.className = "text-xs font-mono text-slate-500 font-bold";
+                    schemPinValText.innerText = "OUT = 1";
+                    gpioExplanation.innerText = "Receiver Mode (Приемник): Pin output is 5V[cite: 4]. Voltage across external load is 0V, LED remains dark[cite: 4].";
+                } else { // Output LOW ('0') -> LED ON (Sinking)
+                    toggleBtn.innerText = "Output LOW ('0' / SINK)";
+                    toggleBtn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+                    desc.innerText = "MCU Output is LOW (0V). Internal transistor grounds pin ($U_{OUT} = 0\\text{V}$). Current flows INTO MCU ($I = 15\\text{mA}$), lighting LED[cite: 4].";
+                    pinVal.innerText = "LOGIC '0' (0.0V)";
+                    pinVal.className = "font-bold text-emerald-400";
+                    currentVal.innerText = "15.0 mA (Sinking)";
+                    safetyVal.innerText = "SAFE (<25mA Max Limit)";
+                    safetyVal.className = "font-bold text-emerald-400";
+
+                    schemCurrentArrow.innerText = "── 15mA ──►";
+                    schemCurrentArrow.className = "text-xs font-mono text-emerald-400 font-bold animate-pulse";
+                    schemPinValText.innerText = "OUT = 0";
+                    gpioExplanation.innerText = "Receiver Mode Active: Internal pin Grounds node ($0\\text{V}$)[cite: 4]. MCU sinks $15\\text{mA}$ safely into silicon ($25\\text{mA}$ max limit)[cite: 4].";
+                }
+
+            } else { // Source Mode
+                schemPinModeText.innerText = "OUTPUT (SOURCE)";
+                schemLeftLabel.innerText = "GND (0V)";
+                schemLeftBox.innerText = "LED + R";
+                schemLeftSub.innerText = "External Load";
+
+                if (!switchStateClosed) { // Output LOW ('0') -> LED OFF
+                    toggleBtn.innerText = "Output LOW ('0')";
+                    toggleBtn.className = "px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+                    desc.innerText = "MCU Output is LOW (0V). Both sides of the load are at 0V GND, so zero current flows[cite: 4].";
+                    pinVal.innerText = "LOGIC '0' (0.0V)";
+                    pinVal.className = "font-bold text-slate-300";
+                    currentVal.innerText = "0.0 mA (Idle)";
+                    safetyVal.innerText = "SAFE (Max 20mA Limit)";
+                    safetyVal.className = "font-bold text-emerald-400";
+
+                    schemCurrentArrow.innerText = "─── OFF ───";
+                    schemCurrentArrow.className = "text-xs font-mono text-slate-500 font-bold";
+                    schemPinValText.innerText = "OUT = 0";
+                    gpioExplanation.innerText = "Source Mode (Източник): Pin output is 0V[cite: 4]. Load remains unpowered[cite: 4].";
+                } else { // Output HIGH ('1') -> LED ON (Sourcing)
+                    toggleBtn.innerText = "Output HIGH ('1' / SOURCE)";
+                    toggleBtn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
+                    desc.innerText = "MCU Output is HIGH (5V). Internal transistor connects $V_{DD}$ to pin ($U_{OUT} = V_{DD}$). MCU sources current OUT to GND ($12\\text{mA}$)[cite: 4].";
+                    pinVal.innerText = "LOGIC '1' (5.0V)";
+                    pinVal.className = "font-bold text-emerald-400";
+                    currentVal.innerText = "12.0 mA (Sourcing)";
+                    safetyVal.innerText = "SAFE (<20mA Max Limit)";
+                    safetyVal.className = "font-bold text-emerald-400";
+
+                    schemCurrentArrow.innerText = "◄── 12mA ──";
+                    schemCurrentArrow.className = "text-xs font-mono text-emerald-400 font-bold animate-pulse";
+                    schemPinValText.innerText = "OUT = 1";
+                    gpioExplanation.innerText = "Source Mode Active: Internal pin connects $V_{DD}$ ($5\\text{V}$)[cite: 4]. MCU sources $12\\text{mA}$ out to external load ($20\\text{mA}$ max limit)[cite: 4].";
+                }
             }
         }
 
@@ -546,16 +973,17 @@
 
             if (q1.value === 'b' && q2.value === 'a' && q3.value === 'b') {
                 res.className = "p-4 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-800 block";
-                res.innerText = "Excellent! You scored 100%. You clearly understand IDE tools, debugging interfaces, transistor physics, and CMOS logic noise margins!";
+                res.innerText = "Excellent! You scored 100%. You understand pull-up resistors, GPIO current sinking (25mA max), sourcing (20mA max), and internal PORT B pull-up configuration!";
             } else {
                 res.className = "p-4 rounded-xl text-xs font-semibold bg-red-100 text-red-800 block";
-                res.innerText = "Some answers were incorrect. Please review the sections and try again!";
+                res.innerText = "Some answers were incorrect. Please review Chapter 7 pull-up resistors and current limits, then try again!";
             }
         }
 
         // Initialize Simulator State
         window.addEventListener('DOMContentLoaded', () => {
             updateTTLSim();
+            renderGpioSim();
         });
     </script>
 </body>
