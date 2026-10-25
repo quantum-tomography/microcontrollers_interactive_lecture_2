@@ -62,7 +62,7 @@
             <div class="pt-6">
                 <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200/80 text-amber-900">
                     <div class="flex items-center space-x-2 font-semibold text-xs text-amber-700 uppercase tracking-wider mb-1">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
                         <span>Core Concept</span>
                     </div>
                     <p class="text-xs leading-relaxed">System architecture relies on balancing hardware/software partitioning. Binary representation guarantees physical noise immunity through qualitative transistor switching (Cutoff vs Saturation).</p>
@@ -445,10 +445,9 @@
                 </div>
             </div>
 
-            <!-- SECTION 3: GPIO INTERFACING, PULL-UPS & CURRENTS (NEW SLIDE) -->
+            <!-- SECTION 3: GPIO INTERFACING, PULL-UPS & CURRENTS (UPDATED SLIDE) -->
             <div id="tab-gpio" class="space-y-6 hidden">
                 <div class="border-b border-slate-100 pb-4">
-                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Chapter 7 Practical Applications</span>
                     <h2 class="text-2xl font-bold text-slate-900">3. GPIO Interfacing, Pull-Up Resistors & Current Limits</h2>
                     <p class="text-slate-500 text-sm mt-1">Understanding input logic signal driving, internal/external pull-ups, current sinking vs. sourcing, and overcurrent limits.</p>
                 </div>
@@ -459,14 +458,14 @@
                     <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
                         <h3 class="text-base font-bold text-slate-900">1. Driving Input Pins & Pull-Up Resistors (Fig. 7.4)</h3>
                         <p class="text-slate-600">
-                            When connecting buttons or external switches to a microcontroller input pin, driving a low logic level ('0') is done by directly shorting the pin to Ground (GND). However, providing a high logic level ('1') <strong>requires a pull-up resistor</strong> ($R = 10\text{k}\Omega$) connected to $V_{DD}$[cite: 4].
+                            When connecting buttons or external switches to a microcontroller input pin, driving a low logic level ('0') is done by directly shorting the pin to Ground (GND). However, providing a high logic level ('1') <strong>requires a pull-up resistor</strong> (R = 10 kΩ) connected to VDD[cite: 4].
                         </p>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
                             <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2">
                                 <strong class="text-blue-600 text-xs block">Why is a Pull-Up Resistor Mandatory?</strong>
                                 <p class="text-slate-600">
-                                    If you connect $V_{DD}$ directly to an input pin without a resistor, pressing a switch wired to GND would short-circuit $V_{DD}$ directly to GND[cite: 4]! The $10\text{k}\Omega$ pull-up limits short-circuit current while pulling the floating pin safely to $V_{DD}$ when the switch is open[cite: 4].
+                                    If you connect VDD directly to an input pin without a resistor, pressing a switch wired to GND would short-circuit VDD directly to GND[cite: 4]! The 10 kΩ pull-up limits short-circuit current while pulling the floating pin safely to VDD when the switch is open[cite: 4].
                                 </p>
                             </div>
 
@@ -494,7 +493,7 @@
                                     <span class="text-[10px] font-mono font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded">Max: 25mA</span>
                                 </div>
                                 <p class="text-slate-600">
-                                    The load is connected between $V_{DD}$ and the MCU output pin[cite: 4]. When the pin output is driven LOW ('0'), the internal transistor grounds the node, pulling current <em>into</em> the chip ($U_{OUT} = 0\text{V}$)[cite: 4].
+                                    The load is connected between VDD and the MCU output pin[cite: 4]. When the pin output is driven LOW ('0'), the internal transistor grounds the node, pulling current <em>into</em> the chip (U_OUT = 0V)[cite: 4].
                                 </p>
                                 <p class="text-slate-500 text-[11px] bg-white p-2 rounded border border-slate-200">
                                     💡 Maximum allowable sink current per pin: <strong>25mA</strong>[cite: 4].
@@ -508,7 +507,7 @@
                                     <span class="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">Max: 20mA</span>
                                 </div>
                                 <p class="text-slate-600">
-                                    The load is connected between the MCU output pin and GND[cite: 4]. When the pin output is driven HIGH ('1'), the MCU supplies current <em>out</em> of the chip to the load ($U_{OUT} = V_{DD}$)[cite: 4].
+                                    The load is connected between the MCU output pin and GND[cite: 4]. When the pin output is driven HIGH ('1'), the MCU supplies current <em>out</em> of the chip to the load (U_OUT = VDD)[cite: 4].
                                 </p>
                                 <p class="text-slate-500 text-[11px] bg-white p-2 rounded border border-slate-200">
                                     💡 Maximum allowable source current per pin: <strong>20mA</strong>[cite: 4].
@@ -522,7 +521,7 @@
                                 ⚠️ Overcurrent Protection & Thermal Damage
                             </strong>
                             <p class="text-amber-800 text-xs leading-relaxed">
-                                While MCU pins can drive LEDs directly, care must be taken not to exceed current ratings[cite: 4]. Exceeding 25mA (sinking) or 20mA (sourcing) will destroy the individual I/O pin drivers or damage the entire I/O port[cite: 4]! Always include external current-limiting resistors ($R$)[cite: 4].
+                                While MCU pins can drive LEDs directly, care must be taken not to exceed current ratings[cite: 4]. Exceeding 25mA (sinking) or 20mA (sourcing) will destroy the individual I/O pin drivers or damage the entire I/O port[cite: 4]! Always include external current-limiting resistors (R)[cite: 4].
                             </p>
                         </div>
                     </div>
@@ -558,7 +557,7 @@
                                         </button>
                                     </div>
                                     <p id="gpioModeDesc" class="text-[11px] text-slate-400 leading-relaxed">
-                                        Pull-Up resistor ($10\text{k}\Omega$) holds input pin at $V_{DD}$ ('1') when switch is open[cite: 4]. Closing switch safely grounds the pin to '0'[cite: 4].
+                                        Pull-Up resistor (10 kΩ) holds input pin at VDD ('1') when switch is open[cite: 4]. Closing switch safely grounds the pin to '0'[cite: 4].
                                     </p>
                                 </div>
 
@@ -569,7 +568,7 @@
                                         <span id="gpioPinVal" class="font-bold text-emerald-400">LOGIC '1' (5.0V)</span>
                                     </div>
                                     <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
-                                        <span class="text-slate-400">Current Flow ($I$):</span>
+                                        <span class="text-slate-400">Current Flow (I):</span>
                                         <span id="gpioCurrentVal" class="font-bold text-slate-300">0.0 mA (Idle)</span>
                                     </div>
                                     <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/80 flex justify-between items-center">
@@ -619,7 +618,7 @@
 
                                 <!-- Dynamic Text Summary -->
                                 <div id="gpioExplanation" class="text-xs text-center text-slate-400 italic bg-slate-900/90 p-3 rounded-xl border border-slate-800 w-full">
-                                    Switch OPEN: $10\text{k}\Omega$ pull-up resistor pulls input pin to $V_{DD}$[cite: 4]. Register reads Logic '1'[cite: 4].
+                                    Switch OPEN: 10 kΩ pull-up resistor pulls input pin to VDD[cite: 4]. Register reads Logic '1'[cite: 4].
                                 </div>
                             </div>
                         </div>
@@ -634,7 +633,7 @@
 
                         <div class="space-y-4">
                             <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                                <p class="text-sm font-semibold text-slate-900 mb-3">1. What is the primary purpose of a $10\text{k}\Omega$ pull-up resistor on a microcontroller input pin (Fig. 7.4)?</p>
+                                <p class="text-sm font-semibold text-slate-900 mb-3">1. What is the primary purpose of a 10 kΩ pull-up resistor on a microcontroller input pin (Fig. 7.4)?</p>
                                 <div class="space-y-2 text-xs">
                                     <label class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
                                         <input type="radio" name="q1" value="a" class="accent-blue-600">
@@ -857,7 +856,7 @@
                 if (!switchStateClosed) {
                     toggleBtn.innerText = "Switch OPEN";
                     toggleBtn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
-                    desc.innerText = "Switch is OPEN. The 10kΩ pull-up resistor holds the input pin voltage tightly at VDD (5.0V)[cite: 4].";
+                    desc.innerText = "Switch is OPEN. The 10 kΩ pull-up resistor holds the input pin voltage tightly at VDD (5.0V)[cite: 4].";
                     pinVal.innerText = "LOGIC '1' (5.0V)";
                     pinVal.className = "font-bold text-emerald-400";
                     currentVal.innerText = "0.0 mA (Idle)";
@@ -867,11 +866,11 @@
                     schemCurrentArrow.innerText = "─── IDLE ───";
                     schemCurrentArrow.className = "text-xs font-mono text-slate-500 font-bold";
                     schemPinValText.innerText = "IN = 1";
-                    gpioExplanation.innerText = "Switch OPEN: $10\\text{k}\\Omega$ pull-up resistor pulls input pin to $V_{DD}$[cite: 4]. Register reads Logic '1'[cite: 4].";
+                    gpioExplanation.innerText = "Switch OPEN: 10 kΩ pull-up resistor pulls input pin to VDD[cite: 4]. Register reads Logic '1'[cite: 4].";
                 } else {
                     toggleBtn.innerText = "Switch CLOSED (GND)";
                     toggleBtn.className = "px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
-                    desc.innerText = "Switch is CLOSED to GND. Current flows safely from VDD through 10kΩ resistor to GND ($I = 0.5\\text{mA}$)[cite: 4]. Pin drops to 0V[cite: 4].";
+                    desc.innerText = "Switch is CLOSED to GND. Current flows safely from VDD through 10 kΩ resistor to GND (I = 0.5 mA)[cite: 4]. Pin drops to 0V[cite: 4].";
                     pinVal.innerText = "LOGIC '0' (0.0V)";
                     pinVal.className = "font-bold text-blue-400";
                     currentVal.innerText = "0.5 mA (Safe)";
@@ -881,7 +880,7 @@
                     schemCurrentArrow.innerText = "◄── 0.5mA ──";
                     schemCurrentArrow.className = "text-xs font-mono text-amber-400 font-bold animate-pulse";
                     schemPinValText.innerText = "IN = 0";
-                    gpioExplanation.innerText = "Switch CLOSED: Pin directly grounded to 0V[cite: 4]. $10\\text{k}\\Omega$ resistor limits short-circuit current to $0.5\\text{mA}$[cite: 4].";
+                    gpioExplanation.innerText = "Switch CLOSED: Pin directly grounded to 0V[cite: 4]. 10 kΩ resistor limits short-circuit current to 0.5 mA[cite: 4].";
                 }
 
             } else if (currentGpioMode === 'sink') {
@@ -893,7 +892,7 @@
                 if (!switchStateClosed) { // Output HIGH ('1') -> LED OFF
                     toggleBtn.innerText = "Output HIGH ('1')";
                     toggleBtn.className = "px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
-                    desc.innerText = "MCU Output is HIGH (5V). Both sides of the LED load are at 5V ($U_{OUT} = V_{DD}$), so zero current flows and LED is OFF[cite: 4].";
+                    desc.innerText = "MCU Output is HIGH (5V). Both sides of the LED load are at 5V (U_OUT = VDD), so zero current flows and LED is OFF[cite: 4].";
                     pinVal.innerText = "LOGIC '1' (5.0V)";
                     pinVal.className = "font-bold text-slate-300";
                     currentVal.innerText = "0.0 mA (No Diff)";
@@ -907,7 +906,7 @@
                 } else { // Output LOW ('0') -> LED ON (Sinking)
                     toggleBtn.innerText = "Output LOW ('0' / SINK)";
                     toggleBtn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
-                    desc.innerText = "MCU Output is LOW (0V). Internal transistor grounds pin ($U_{OUT} = 0\\text{V}$). Current flows INTO MCU ($I = 15\\text{mA}$), lighting LED[cite: 4].";
+                    desc.innerText = "MCU Output is LOW (0V). Internal transistor grounds pin (U_OUT = 0V). Current flows INTO MCU (I = 15 mA), lighting LED[cite: 4].";
                     pinVal.innerText = "LOGIC '0' (0.0V)";
                     pinVal.className = "font-bold text-emerald-400";
                     currentVal.innerText = "15.0 mA (Sinking)";
@@ -917,7 +916,7 @@
                     schemCurrentArrow.innerText = "── 15mA ──►";
                     schemCurrentArrow.className = "text-xs font-mono text-emerald-400 font-bold animate-pulse";
                     schemPinValText.innerText = "OUT = 0";
-                    gpioExplanation.innerText = "Receiver Mode Active: Internal pin Grounds node ($0\\text{V}$)[cite: 4]. MCU sinks $15\\text{mA}$ safely into silicon ($25\\text{mA}$ max limit)[cite: 4].";
+                    gpioExplanation.innerText = "Receiver Mode Active: Internal pin Grounds node (0V)[cite: 4]. MCU sinks 15 mA safely into silicon (25mA max limit)[cite: 4].";
                 }
 
             } else { // Source Mode
@@ -943,7 +942,7 @@
                 } else { // Output HIGH ('1') -> LED ON (Sourcing)
                     toggleBtn.innerText = "Output HIGH ('1' / SOURCE)";
                     toggleBtn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs rounded-lg font-bold transition-all shadow-md";
-                    desc.innerText = "MCU Output is HIGH (5V). Internal transistor connects $V_{DD}$ to pin ($U_{OUT} = V_{DD}$). MCU sources current OUT to GND ($12\\text{mA}$)[cite: 4].";
+                    desc.innerText = "MCU Output is HIGH (5V). Internal transistor connects VDD to pin (U_OUT = VDD). MCU sources current OUT to GND (12 mA)[cite: 4].";
                     pinVal.innerText = "LOGIC '1' (5.0V)";
                     pinVal.className = "font-bold text-emerald-400";
                     currentVal.innerText = "12.0 mA (Sourcing)";
@@ -953,7 +952,7 @@
                     schemCurrentArrow.innerText = "◄── 12mA ──";
                     schemCurrentArrow.className = "text-xs font-mono text-emerald-400 font-bold animate-pulse";
                     schemPinValText.innerText = "OUT = 1";
-                    gpioExplanation.innerText = "Source Mode Active: Internal pin connects $V_{DD}$ ($5\\text{V}$)[cite: 4]. MCU sources $12\\text{mA}$ out to external load ($20\\text{mA}$ max limit)[cite: 4].";
+                    gpioExplanation.innerText = "Source Mode Active: Internal pin connects VDD (5V)[cite: 4]. MCU sources 12 mA out to external load (20mA max limit)[cite: 4].";
                 }
             }
         }
