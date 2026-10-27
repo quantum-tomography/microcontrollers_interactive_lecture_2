@@ -133,29 +133,80 @@
                         </div>
                     </div>
 
-                    <!-- Debug & Programming Protocol Glossary -->
-                    <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                        <h3 class="text-sm font-bold text-slate-900">Hardware Debug & Programming Interfaces Glossary</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">SWD (Serial Wire Debug)</strong>
-                                <span class="text-slate-500">2-pin ARM Cortex protocol (SWCLK + SWDIO) replacing bulky JTAG while retaining full debug capability.</span>
+                    <!-- Hardware Debug & Programming Interface Glossary -->
+                    <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="border-b border-slate-100 pb-2">
+                            <h3 class="text-sm font-bold text-slate-900">Hardware Debug & Programming Interfaces Explained</h3>
+                            <p class="text-slate-500 text-[11px] mt-0.5">How your computer connects to, flashes code onto, and inspects a physical microcontroller chip.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <!-- JTAG -->
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <strong class="text-blue-600 text-xs font-bold">JTAG</strong>
+                                    <span class="text-[10px] font-mono text-slate-400 bg-slate-200/60 px-1.5 py-0.5 rounded">4-5 Wire Protocol</span>
+                                </div>
+                                <div class="text-[11px] font-mono text-slate-500">Joint Test Action Group Standard</div>
+                                <p class="text-slate-600 text-[11px] leading-relaxed">
+                                    The traditional industry standard for testing chips and loading firmware. Uses 4 main physical lines: 
+                                    <strong>TMS</strong> (Test Mode Select), 
+                                    <strong>TCK</strong> (Test Clock), 
+                                    <strong>TDI</strong> (Test Data In), and 
+                                    <strong>TDO</strong> (Test Data Out). It allows deep internal testing of memory, registers, and chip circuitry.
+                                </p>
                             </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">JTAG</strong>
-                                <span class="text-slate-500">4/5-pin IEEE standard (TMS, TCK, TDI, TDO) for deep chip verification and multi-device boundary scan.</span>
+
+                            <!-- SWD -->
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <strong class="text-blue-600 text-xs font-bold">SWD</strong>
+                                    <span class="text-[10px] font-mono text-slate-400 bg-slate-200/60 px-1.5 py-0.5 rounded">2 Wire Protocol</span>
+                                </div>
+                                <div class="text-[11px] font-mono text-slate-500">Serial Wire Debug</div>
+                                <p class="text-slate-600 text-[11px] leading-relaxed">
+                                    A modern, compact alternative to JTAG created specifically for <strong>ARM Cortex</strong> microcontrollers. It uses only 2 physical lines: 
+                                    <strong>SWCLK</strong> (Clock) and 
+                                    <strong>SWDIO</strong> (Data Input/Output). This saves valuable chip pins while offering the exact same full debugging capabilities as JTAG.
+                                </p>
                             </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">ICSP / UPDI</strong>
-                                <span class="text-slate-500">In-Circuit Serial Programming (Microchip PIC) and Unified Program and Debug Interface (Modern AVR).</span>
+
+                            <!-- ICSP & UPDI -->
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <strong class="text-blue-600 text-xs font-bold">ICSP & UPDI</strong>
+                                    <span class="text-[10px] font-mono text-slate-400 bg-slate-200/60 px-1.5 py-0.5 rounded">Microchip Standard</span>
+                                </div>
+                                <div class="text-[11px] font-mono text-slate-500">In-Circuit Serial Prog. / Unified Program & Debug Interface</div>
+                                <p class="text-slate-600 text-[11px] leading-relaxed">
+                                    <strong>ICSP:</strong> The standard multi-pin programming method used for Microchip <strong>PIC</strong> microcontrollers.<br>
+                                    <strong>UPDI:</strong> A high-speed, single-pin programming interface used for modern Microchip <strong>AVR / ATtiny / ATmega</strong> chips.
+                                </p>
                             </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <strong class="text-blue-600 block mb-1">CMSIS-DAP</strong>
-                                <span class="text-slate-500">Open-source driverless ARM standard for USB debug probes.</span>
+
+                            <!-- CMSIS-DAP -->
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <strong class="text-blue-600 text-xs font-bold">CMSIS-DAP</strong>
+                                    <span class="text-[10px] font-mono text-slate-400 bg-slate-200/60 px-1.5 py-0.5 rounded">Driverless USB Standard</span>
+                                </div>
+                                <div class="text-[11px] font-mono text-slate-500">Cortex Microcontroller Software Interface Standard - Debug Access Port</div>
+                                <p class="text-slate-600 text-[11px] leading-relaxed">
+                                    An open-source USB debugging standard for ARM microcontrollers. Because it relies on standard USB Human Interface Device (HID) drivers, it works out-of-the-box on Windows, Mac, and Linux without installing custom third-party drivers.
+                                </p>
                             </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 sm:col-span-2">
-                                <strong class="text-blue-600 block mb-1">ST-Link & Segger J-Link</strong>
-                                <span class="text-slate-500">Hardware USB probes providing the physical signal translation between PC IDE commands and target MCU debug lines.</span>
+
+                            <!-- ST-Link & J-Link (Full Width) -->
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 md:col-span-2 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <strong class="text-blue-600 text-xs font-bold">ST-Link & Segger J-Link Probes</strong>
+                                    <span class="text-[10px] font-mono text-slate-400 bg-slate-200/60 px-1.5 py-0.5 rounded">Hardware Debug Probes (Adapters)</span>
+                                </div>
+                                <p class="text-slate-600 text-[11px] leading-relaxed">
+                                    These are the physical USB hardware pods ("debug probes") that sit between your computer and target board. 
+                                    <strong>ST-Link</strong> is STMicroelectronics' official low-cost debugger for STM32 boards. 
+                                    <strong>Segger J-Link</strong> is an industry-grade high-speed debugger supporting virtually all microcontroller architectures.
+                                </p>
                             </div>
                         </div>
                     </div>
